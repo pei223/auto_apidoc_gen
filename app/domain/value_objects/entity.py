@@ -13,7 +13,7 @@ class Entity:
     @property
     def endpoint_text(self):
         if not self._endpoint_text:
-            translated_text = TranslationRepository().translate(self.entity_name)
+            translated_text = TranslationRepository.translate(self.entity_name)
             self._endpoint_text = self._words_to_endpoint(translated_text)
         return self._endpoint_text
 

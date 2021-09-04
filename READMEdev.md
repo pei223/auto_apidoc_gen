@@ -16,3 +16,9 @@ python main.py
 flake8 app
 black app -l 120
 ```
+
+## test
+
+```
+pytest tests
+```

@@ -1,11 +1,8 @@
 from typing import Dict
 from googletrans import Translator
 
-from ..utils.annotations import singleton_class
 
-
-@singleton_class
-class TranslationRepository:
+class _TranslationRepository:
     def __init__(self):
         self._translator = Translator()
         self._memory_cache: Dict[str, str] = {}
@@ -17,3 +14,6 @@ class TranslationRepository:
         result = self._translator.translate(text).text
         self._memory_cache[text] = result
         return result
+
+
+TranslationRepository = _TranslationRepository()

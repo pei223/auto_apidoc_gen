@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from dataclasses import dataclass
 from typing import List
 
@@ -15,7 +16,7 @@ class EndpointInfo:
         return list(
             map(
                 lambda api_kind: f"/{self.entity.endpoint_text}/"
-                f"{api_kind.rest_endpoint_extension() if is_REST else api_kind.endpoint_extension()} ",
+                                 f"{api_kind.rest_endpoint_extension() if is_REST else api_kind.endpoint_extension()}",
                 self.api_kind_ls,
             )
         )
@@ -33,7 +34,7 @@ class EndpointInfo:
 
 
 def aggregate_by_entity(
-    api_nl_names: List[str], entities: List[Entity], api_kind_ls: List[ApiKind]
+        api_nl_names: List[str], entities: List[Entity], api_kind_ls: List[ApiKind]
 ) -> List[EndpointInfo]:
     """
     同一Entityごとに自然言語API名, API種別を集約する
@@ -42,7 +43,7 @@ def aggregate_by_entity(
     :param api_kind_ls:
     :return:
     """
-    d = {}
+    d = OrderedDict()
     for api_nl_name, entity, api_kin in zip(api_nl_names, entities, api_kind_ls):
         if not d.get(entity.entity_name):
             d[entity.entity_name] = {
