@@ -30,3 +30,8 @@ class Entity:
             norm_text_ls.append(text)
         norm_text_ls[-1] = i.pluralize(norm_text_ls[-1])
         return "_".join(norm_text_ls).lower()
+
+    def __eq__(self, other: 'Entity'):
+        if not isinstance(other, Entity):
+            return False
+        return self.entity_name == other.entity_name
