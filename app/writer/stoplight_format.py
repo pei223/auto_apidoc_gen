@@ -1,5 +1,3 @@
-from typing import List
-
 import yaml
 
 from app.domain.value_objects.api_kinds import ApiKind
@@ -9,12 +7,7 @@ from app.domain.value_objects.setting import Setting
 
 class StoplightStudioFormat:
     def __init__(self, endpoint_info: EndpointInfo, setting: Setting):
-        self._tree = {
-            "openapi": "3.1.0",
-            "info": {},
-            "servers": {},
-            "paths": {}
-        }
+        self._tree = {"openapi": "3.1.0", "info": {}, "servers": {}, "paths": {}}
         self._endpoint_info = endpoint_info
         self._setting = setting
 
@@ -29,7 +22,7 @@ class StoplightStudioFormat:
     def _parse_endpoint(self, endpoint_url: str, api_kind: ApiKind):
         if not self._tree["paths"].get(endpoint_url):
             self._tree["paths"][endpoint_url] = {}
-        if not self._tree["paths"][endpoint_url]["parameters"]
+        if not self._tree["paths"][endpoint_url]["parameters"]:
             pass
 
     def _parse_basic_items(self):

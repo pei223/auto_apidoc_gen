@@ -1,5 +1,7 @@
 def singleton_class(class_):
-    instance = [None, ]
+    instance = [
+        None,
+    ]
 
     def wrapper(*args, **kwargs):
         if instance[0] is None:

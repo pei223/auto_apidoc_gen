@@ -5,7 +5,9 @@ from ..domain.value_objects.types import ModifierType
 
 MODIFIER_TYPE_WORDS_DICT: Dict[ModifierType, List[str]] = {
     ModifierType.All_or_List: ["全て", "全部", "全体", "一覧", "リスト"],
-    ModifierType.Multi: ["複数", ],
+    ModifierType.Multi: [
+        "複数",
+    ],
 }
 
 

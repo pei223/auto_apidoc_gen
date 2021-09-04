@@ -2,8 +2,8 @@ from typing import List, Set
 
 from .base import ApiKind
 
-from ..types import ActionType, ModifierType, HttpMethodType
-from ..http_status import HttpStatus, NotFound, OK, BadRequest
+from ..types import ActionType
+from ..http_status import HttpStatus, OK, BadRequest
 
 
 class SearchApi(ApiKind):
@@ -14,9 +14,7 @@ class SearchApi(ApiKind):
         ]
 
     def action_types(self) -> Set[ActionType]:
-        return {
-            ActionType.Search
-        }
+        return {ActionType.Search}
 
     def rest_endpoint_extension(self) -> str:
         return "search"

@@ -14,9 +14,7 @@ from ..domain.value_objects.entity import Entity
 
 def parse(text: str) -> Tuple[Entity, ApiKind]:
     tokenizer = Tokenizer()
-    char_filters = [
-        RegexReplaceCharFilter("情報|状態", "")
-    ]
+    char_filters = [RegexReplaceCharFilter("情報|状態", "")]
     analyzer = Analyzer(tokenizer=tokenizer, char_filters=char_filters)
 
     tokens: List[Token] = list(analyzer.analyze(text))

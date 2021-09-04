@@ -4,3 +4,5 @@ nltk
 inflection
 pyyaml
 flake8
+black
+pytest

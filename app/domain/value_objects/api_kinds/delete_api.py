@@ -2,7 +2,7 @@ from typing import List, Set
 
 from .base import ApiKind
 
-from ..types import ActionType, ModifierType, HttpMethodType
+from ..types import ActionType, HttpMethodType
 from ..http_status import HttpStatus, NotFound, OK, BadRequest
 
 

@@ -2,8 +2,8 @@ from typing import List, Set, Optional
 
 from .base import ApiKind
 
-from ..types import ActionType, ModifierType, HttpMethodType
-from ..http_status import HttpStatus, NotFound, OK, BadRequest
+from ..types import ActionType, ModifierType
+from ..http_status import HttpStatus, OK
 
 
 class ReadApi(ApiKind):

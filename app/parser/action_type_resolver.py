@@ -3,12 +3,7 @@ from janome.tokenizer import Token
 
 from ..domain.value_objects.types import ActionType
 
-CUSTOM_ACTION_LS = [
-    "保存",
-    "確定",
-    "キャンセル",
-    "予約"
-]
+CUSTOM_ACTION_LS = ["保存", "確定", "キャンセル", "予約"]
 
 ACTION_TYPE_WORDS_DICT: Dict[ActionType, List[str]] = {
     ActionType.Get: ["取得"],
@@ -16,7 +11,7 @@ ACTION_TYPE_WORDS_DICT: Dict[ActionType, List[str]] = {
     ActionType.Update: ["更新", "アップデート"],
     ActionType.Delete: ["削除", "消去"],
     ActionType.Search: ["検索"],
-    ActionType.Custom: CUSTOM_ACTION_LS
+    ActionType.Custom: CUSTOM_ACTION_LS,
 }
 
 
