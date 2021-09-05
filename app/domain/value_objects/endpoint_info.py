@@ -16,7 +16,7 @@ class EndpointInfo:
         return list(
             map(
                 lambda api_kind: f"/{self.entity.endpoint_text}/"
-                                 f"{api_kind.rest_endpoint_extension() if is_REST else api_kind.endpoint_extension()}",
+                f"{api_kind.rest_endpoint_extension() if is_REST else api_kind.endpoint_extension()}",
                 self.api_kind_ls,
             )
         )
@@ -32,9 +32,12 @@ class EndpointInfo:
             )
         return "\n".join(result_rows)
 
+    def api_count(self) -> int:
+        return len(self.api_nl_names)
+
 
 def aggregate_by_entity(
-        api_nl_names: List[str], entities: List[Entity], api_kind_ls: List[ApiKind]
+    api_nl_names: List[str], entities: List[Entity], api_kind_ls: List[ApiKind]
 ) -> List[EndpointInfo]:
     """
     同一Entityごとに自然言語API名, API種別を集約する

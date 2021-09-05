@@ -4,7 +4,9 @@ from ..domain.value_objects.endpoint_info import EndpointInfo
 from ..domain.value_objects.setting import Setting
 
 
-def write_for_stoplight_studio_format(endpoint_info_ls: EndpointInfo, setting: Setting, output_dir: str):
+def write_for_stoplight_studio_format(
+    endpoint_info_ls: EndpointInfo, setting: Setting, output_dir: str
+):
     root_dir, paths_dir, common_dir = _setup_out_dirs(output_dir)
 
 

@@ -1,6 +1,7 @@
 from typing import List, Set
 
 from .base import ApiKind
+from ..parameters import ParamInfo, ParamType
 
 from ..types import ActionType, HttpMethodType
 from ..http_status import HttpStatus, NotFound, OK, BadRequest
@@ -25,3 +26,6 @@ class UpdateApi(ApiKind):
 
     def endpoint_extension(self) -> str:
         return "update/{id}"
+
+    def path_parameters(self) -> List[ParamInfo]:
+        return [ParamInfo(type=ParamType.Integer, name="id", required=True)]
