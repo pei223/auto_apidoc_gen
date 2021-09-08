@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import List, Set, Optional
 
-from ..parameters import ParamInfo
+from ..parameters import SchemaParamInfo, ParamInfo, ObjectSchemaParam, ValueSchemaParam, ArraySchemaParam, ParamType
 from ..types import ActionType, ModifierType, HttpMethodType
 from ..http_status import HttpStatus
 
@@ -41,3 +41,20 @@ class ApiKind(metaclass=ABCMeta):
         """
         # TODO abstractにする
         return ""
+
+    def response_schema(self, entity_name: str) -> SchemaParamInfo:
+        # TODO デバッグコード
+        v = ObjectSchemaParam(
+            name="schema",
+            properties=[
+                ValueSchemaParam(name="test", type=ParamType.String),
+                # RefSchemaParam(name="err", ref_path="aaaa.html"),
+                ArraySchemaParam(
+                    name="arr",
+                    items=ObjectSchemaParam(
+                        name="eee", properties=[ValueSchemaParam(name="aaa", type=ParamType.String)]
+                    ),
+                ),
+            ],
+        )
+        return v

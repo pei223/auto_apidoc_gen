@@ -36,9 +36,7 @@ def parse(text: str) -> Tuple[Entity, ApiKind]:
             modifier = _modifier
             continue
 
-        action = resolve_action_type(
-            token, tokens[i + 1] if i < token_len - 1 else None
-        )
+        action = resolve_action_type(token, tokens[i + 1] if i < token_len - 1 else None)
         if action:
             if action != ActionType.Custom:
                 actions.append(action)
@@ -53,8 +51,6 @@ def parse(text: str) -> Tuple[Entity, ApiKind]:
 
     # print(actions, modifier, custom_action_candidate)
     entity = Entity("".join(entity_candidates[::-1]))
-    api_type = api_kind_resolver.resolve_api_type(
-        set(actions), modifier, custom_action_candidate
-    )
+    api_type = api_kind_resolver.resolve_api_type(set(actions), modifier, custom_action_candidate)
     # print(actions)
     return entity, api_type

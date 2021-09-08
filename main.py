@@ -1,7 +1,9 @@
+from pathlib import Path
 from app.domain.value_objects.endpoint_info import aggregate_by_entity
-from app.domain.value_objects.setting import Setting
 from app.parser.parser import parse
-from app.writer.stoplight_format import StoplightStudioFormat
+from app.utils.pyyaml_util import output_yaml
+from app.writer.stoplight.stoplight_format_writer import StoplightFormatWriter
+from app.writer.stoplight.stoplight_setting import StoplightSetting
 
 if __name__ == "__main__":
     text_ls = [
@@ -24,19 +26,19 @@ if __name__ == "__main__":
         entities.append(entity)
         api_types.append(api_type)
 
+    root = Path("./docs/reference")
+    root.joinpath("common").mkdir(parents=True, exist_ok=True)
+    root.joinpath("paths").mkdir(parents=True, exist_ok=True)
+
     endpoints = aggregate_by_entity(text_ls, entities, api_types)
 
-    setting = Setting(
-        require_authorization=False,
-        error_response_schema={},
-        error_response_schema_example={},
-        is_rest=True,
-        server_url="http://localhost:3000",
-        add_internal_error=False
-    )
+    setting = StoplightSetting.from_file("./setting.json")
     for endpoint in endpoints:
         print(endpoint.to_string(is_REST=False))
         print("\n\n")
-        f = StoplightStudioFormat(endpoint, setting)
+        f = StoplightFormatWriter(endpoint, setting)
         f.parse()
-        f.output_yaml(endpoint.entity.entity_name + ".yaml")
+        output_yaml(f.get_tree(), str(root.joinpath("paths").joinpath(endpoint.entity.entity_name + ".yaml")))
+
+    setting.output_auth_model(str(root.joinpath("common").joinpath("Authorization.yaml")))
+    setting.output_error_response_model(str(root.joinpath("common").joinpath("ErrorResponse.yaml")))

@@ -1,0 +1,26 @@
+{
+  "require_authorization": true,
+  "authorization": {
+    "schema": "Bearer <token>"
+  },
+  "error_response": {
+    "title": "エラーレスポンス",
+    "type": "object",
+    "properties": {
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "is_rest": true,
+  "add_internal_error": true,
+  "server_url": "http://localhost:3000"
+}

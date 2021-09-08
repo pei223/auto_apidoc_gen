@@ -24,8 +24,4 @@ class SearchApi(ApiKind):
         return "search"
 
     def query_parameters(self) -> List[ParamInfo]:
-        return [
-            ParamInfo(
-                type=ParamType.String, name="q", required=True, description="検索条件"
-            )
-        ]
+        return [ParamInfo(type=ParamType.String, name="q", required=True, description="検索条件")]

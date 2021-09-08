@@ -31,7 +31,5 @@ class CustomPostActionApi(ApiKind):
     def endpoint_extension(self) -> str:
         if self._action_translated:
             return self._action_translated
-        self._action_translated = TranslationRepository.translate(
-            self.action_name
-        ).lower()
+        self._action_translated = TranslationRepository.translate(self.action_name).lower()
         return self._action_translated

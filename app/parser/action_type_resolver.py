@@ -15,9 +15,7 @@ ACTION_TYPE_WORDS_DICT: Dict[ActionType, List[str]] = {
 }
 
 
-def resolve_action_type(
-    token: Token, next_token: Optional[Token]
-) -> Optional[ActionType]:
+def resolve_action_type(token: Token, next_token: Optional[Token]) -> Optional[ActionType]:
     for key, value in ACTION_TYPE_WORDS_DICT.items():
         if token.node.surface in value:
             return key

@@ -1,21 +1,16 @@
 from collections import OrderedDict
+from typing import Dict
 
-import yaml
-import codecs
-
-from ..domain.value_objects.endpoint_info import EndpointInfo
-from ..domain.value_objects.setting import Setting
+from ..stoplight.response_writer import generate_response_schema
+from ...domain.value_objects.endpoint_info import EndpointInfo
+from ...domain.value_objects.setting import Setting
 
 
-class StoplightStudioFormat:
+class StoplightFormatWriter:
     def __init__(self, endpoint_info: EndpointInfo, setting: Setting):
-        self._tree = OrderedDict(
-            {"openapi": "3.1.0", "info": {}, "servers": {}, "paths": {}}
-        )
+        self._tree = OrderedDict({"openapi": "3.1.0", "info": {}, "servers": {}, "paths": {}})
         self._endpoint_info = endpoint_info
-        self._endpoint_urls = self._endpoint_info.generate_endpoint_urls(
-            setting.is_rest
-        )
+        self._endpoint_urls = self._endpoint_info.generate_endpoint_urls(setting.is_rest)
         self._setting = setting
 
     def parse(self):
@@ -61,9 +56,7 @@ class StoplightStudioFormat:
             "responses": self._get_each_response_of_method(order),
         }
 
-        self._tree["paths"][endpoint_url][
-            api_kind.method_type().value.lower()
-        ] = method_data
+        self._tree["paths"][endpoint_url][api_kind.method_type().value.lower()] = method_data
 
     def _get_each_response_of_method(self, order: int):
         entity = self._endpoint_info.entity
@@ -71,16 +64,13 @@ class StoplightStudioFormat:
         responses = {}
         for http_status in api_kind.http_status_list():
             if http_status.is_succeed_status():
-                # TODO
-                response_schema = {}
+                response_schema = generate_response_schema(api_kind.response_schema(entity_name=entity.entity_name))
                 response_examples = {}
             else:
-                response_schema = {}
+                response_schema = self._setting.error_response_schema.copy()
                 response_examples = {}
             responses[str(http_status.status_code())] = {
-                "description": http_status.description(
-                    entity.entity_name, api_kind.operation_word()
-                ),
+                "description": http_status.description(entity.entity_name, api_kind.operation_word()),
                 "content": {
                     "application/json": {
                         "schema": response_schema,
@@ -97,22 +87,8 @@ class StoplightStudioFormat:
         self._tree["info"] = {
             "title": self._endpoint_info.entity.entity_name + "API",
             "version": "1.0",
-            "summary": self._endpoint_info.entity.entity_name + "関連API"
+            "summary": self._endpoint_info.entity.entity_name + "関連API",
         }
 
-    def output_yaml(self, filepath: str):
-        self._adjust_ordereddict_to_yaml()
-        with codecs.open(filepath, "w", "utf-8") as f:
-            yaml.dump(self._tree, f, encoding="utf-8", allow_unicode=True)
-
-    @staticmethod
-    def _adjust_ordereddict_to_yaml():
-        def represent_odict(dumper, instance):
-            return dumper.represent_mapping("tag:yaml.org,2002:map", instance.items())
-
-        yaml.add_representer(OrderedDict, represent_odict)
-
-        def construct_odict(loader, node):
-            return OrderedDict(loader.construct_pairs(node))
-
-        yaml.add_constructor("tag:yaml.org,2002:map", construct_odict)
+    def get_tree(self) -> Dict[str, any]:
+        return self._tree
