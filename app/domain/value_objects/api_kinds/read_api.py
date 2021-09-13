@@ -20,5 +20,8 @@ class ReadApi(ApiKind):
     def modifier_type(self) -> Optional[ModifierType]:
         return ModifierType.All_or_List
 
+    def operation_word(self) -> str:
+        return "取得"
+
     def endpoint_extension(self) -> str:
         return "list"

@@ -1,7 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from typing import List, Set, Optional
 
-from ..parameters import SchemaParamInfo, ParamInfo, ObjectSchemaParam, ValueSchemaParam, ArraySchemaParam, ParamType
+from ..parameters import SchemaParamInfo, PathParamInfo, ObjectSchemaParam, ValueSchemaParam, ArraySchemaParam, \
+    ParamType, \
+    QueryParamInfo
 from ..types import ActionType, ModifierType, HttpMethodType
 from ..http_status import HttpStatus
 
@@ -15,6 +17,10 @@ class ApiKind(metaclass=ABCMeta):
     def action_types(self) -> Set[ActionType]:
         pass
 
+    @abstractmethod
+    def endpoint_extension(self) -> str:
+        pass
+
     def modifier_type(self) -> Optional[ModifierType]:
         return None
 
@@ -24,23 +30,19 @@ class ApiKind(metaclass=ABCMeta):
     def rest_endpoint_extension(self) -> str:
         return ""
 
+    def path_parameters(self) -> List[PathParamInfo]:
+        return []
+
+    def query_parameters(self) -> List[QueryParamInfo]:
+        return []
+
     @abstractmethod
-    def endpoint_extension(self) -> str:
-        pass
-
-    def path_parameters(self) -> List[ParamInfo]:
-        return []
-
-    def query_parameters(self) -> List[ParamInfo]:
-        return []
-
     def operation_word(self) -> str:
         """
         操作を表す単語を返却
         :return:
         """
-        # TODO abstractにする
-        return ""
+        pass
 
     def response_schema(self, entity_name: str) -> SchemaParamInfo:
         # TODO デバッグコード

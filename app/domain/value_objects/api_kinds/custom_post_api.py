@@ -4,19 +4,19 @@ from ....repository.translate import TranslationRepository
 from .base import ApiKind
 
 from ..types import ActionType, HttpMethodType
-from ..http_status import HttpStatus, NotFound, OK, BadRequest
+from ..http_status import HttpStatus, NotFound, OK, BadRequest, Conflict
 
 
 class CustomPostActionApi(ApiKind):
     def __init__(self, action_name: str):
         self.action_name = action_name
-        self._action_translated = None
 
     def http_status_list(self) -> List[HttpStatus]:
         return [
             OK(),
             BadRequest(),
             NotFound(),
+            Conflict()
         ]
 
     def action_types(self) -> Set[ActionType]:
@@ -28,8 +28,8 @@ class CustomPostActionApi(ApiKind):
     def rest_endpoint_extension(self) -> str:
         return self.endpoint_extension()
 
+    def operation_word(self) -> str:
+        return self.action_name
+
     def endpoint_extension(self) -> str:
-        if self._action_translated:
-            return self._action_translated
-        self._action_translated = TranslationRepository.translate(self.action_name).lower()
-        return self._action_translated
+        return TranslationRepository.translate(self.action_name).lower()
