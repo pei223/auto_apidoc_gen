@@ -40,6 +40,14 @@ class BadRequest(HttpStatus):
         return "リクエスト不正"
 
 
+class Unauthorized(HttpStatus):
+    def status_code(self) -> int:
+        return 401
+
+    def description(self, entity_name: str, operation_word: str):
+        return "認証エラー"
+
+
 class NotFound(HttpStatus):
     def status_code(self) -> int:
         return 404
@@ -54,3 +62,11 @@ class Conflict(HttpStatus):
 
     def description(self, entity_name: str, operation_word: str):
         return f"{entity_name}データが重複している"
+
+
+class InternalServerError(HttpStatus):
+    def status_code(self) -> int:
+        return 500
+
+    def description(self, entity_name: str, operation_word: str):
+        return "内部サーバーエラー"

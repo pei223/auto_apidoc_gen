@@ -3,6 +3,7 @@ from typing import Dict
 
 from ..stoplight.response_writer import generate_response_schema
 from ...domain.value_objects.endpoint_info import EndpointInfo
+from ...domain.value_objects.http_status import InternalServerError, Unauthorized
 from ...domain.value_objects.setting import Setting
 
 
@@ -59,22 +60,24 @@ class StoplightFormatWriter:
         self._tree["paths"][endpoint_url][api_kind.method_type().value.lower()] = method_data
 
     def _get_each_response_of_method(self, order: int):
-        entity = self._endpoint_info.entity
-        api_kind = self._endpoint_info.api_kind_ls[order]
+        entity, api_kind = self._endpoint_info.entity, self._endpoint_info.api_kind_ls[order]
         responses = {}
-        for http_status in api_kind.http_status_list():
-            if http_status.is_succeed_status():
-                response_schema = generate_response_schema(api_kind.response_schema(entity_name=entity.entity_name))
-                response_examples = {}
-            else:
-                response_schema = self._setting.error_response_schema.copy()
-                response_examples = {}
+        http_status_list = api_kind.http_status_list()
+        if self._setting.add_internal_error:
+            http_status_list.append(InternalServerError())
+        if self._setting.is_authorization_required():
+            http_status_list.append(Unauthorized())
+
+        for http_status in http_status_list:
+            response_schema = generate_response_schema(api_kind.response_schema(
+                entity_name=entity.entity_name)) if http_status.is_succeed_status() \
+                else self._setting.error_response_schema.copy()
             responses[str(http_status.status_code())] = {
                 "description": http_status.description(entity.entity_name, api_kind.operation_word()),
                 "content": {
                     "application/json": {
                         "schema": response_schema,
-                        "examples": response_examples,
+                        "examples": {},
                     }
                 },
             }

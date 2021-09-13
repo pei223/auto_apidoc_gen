@@ -41,3 +41,6 @@ class Setting(metaclass=ABCMeta):
     @abstractmethod
     def output_auth_model(self, filepath: str):
         pass
+
+    def is_authorization_required(self) -> bool:
+        return self.require_authorization is not None

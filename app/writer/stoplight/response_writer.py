@@ -12,7 +12,7 @@ from ...domain.value_objects.parameters import (
 
 
 def generate_response_schema(
-    param_info: SchemaParamInfo, prev_param_info: Optional[SchemaParamInfo] = None
+        param_info: SchemaParamInfo, prev_param_info: Optional[SchemaParamInfo] = None
 ) -> Dict[str, any] or str:
     if isinstance(param_info, ObjectSchemaParam) or isinstance(param_info, FirstObjectSchemaParam):
         properties = OrderedDict()
