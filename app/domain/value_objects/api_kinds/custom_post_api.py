@@ -1,5 +1,6 @@
-from typing import List, Set
+from typing import List, Set, Optional
 
+from ..parameters import SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam, ParamType
 from ....repository.translate import TranslationRepository
 from .base import ApiKind
 
@@ -36,3 +37,9 @@ class CustomPostActionApi(ApiKind):
 
     def endpoint_extension(self) -> str:
         return TranslationRepository.translate(self.action_name).lower()
+
+    def request_body(self, entity_name: str) -> Optional[SchemaParamInfo]:
+        # NOTE ここentity名で自動化できるとかなりすごい
+        return FirstObjectSchemaParam(properties=[
+            ValueSchemaParam(name="name", type=ParamType.String)
+        ])

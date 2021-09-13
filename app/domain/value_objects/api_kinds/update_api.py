@@ -1,7 +1,7 @@
-from typing import List, Set
+from typing import List, Set, Optional
 
 from .base import ApiKind
-from ..parameters import ParamInfo, ParamType
+from ..parameters import ParamInfo, ParamType, SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam
 
 from ..types import ActionType, HttpMethodType
 from ..http_status import HttpStatus, NotFound, OK, BadRequest
@@ -37,3 +37,9 @@ class UpdateApi(ApiKind):
 
     def path_parameters(self) -> List[ParamInfo]:
         return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]
+
+    def request_body(self, entity_name: str) -> Optional[SchemaParamInfo]:
+        # NOTE ここentity名で自動化できるとかなりすごい
+        return FirstObjectSchemaParam(properties=[
+            ValueSchemaParam(name="name", type=ParamType.String)
+        ])

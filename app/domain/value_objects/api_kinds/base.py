@@ -35,6 +35,9 @@ class ApiKind(metaclass=ABCMeta):
     def query_parameters(self) -> List[ParamInfo]:
         return []
 
+    def request_body(self, entity_name: str) -> Optional[SchemaParamInfo]:
+        return None
+
     @abstractmethod
     def operation_word(self) -> str:
         """

@@ -1,6 +1,7 @@
-from typing import List, Set
+from typing import List, Set, Optional
 
 from .base import ApiKind
+from ..parameters import SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam, ParamType
 
 from ..types import ActionType, HttpMethodType
 from ..http_status import HttpStatus, OK, BadRequest
@@ -28,3 +29,9 @@ class AddApi(ApiKind):
 
     def endpoint_extension(self) -> str:
         return "add"
+
+    def request_body(self, entity_name: str) -> Optional[SchemaParamInfo]:
+        # NOTE ここentity名で自動化できるとかなりすごい
+        return FirstObjectSchemaParam(properties=[
+            ValueSchemaParam(name="name", type=ParamType.String)
+        ])

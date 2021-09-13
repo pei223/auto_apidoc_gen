@@ -11,13 +11,13 @@ from ...domain.value_objects.parameters import (
 )
 
 
-def generate_response_schema(
+def convert_openapi_schema(
         param_info: SchemaParamInfo, prev_param_info: Optional[SchemaParamInfo] = None
 ) -> Dict[str, any] or str:
     if isinstance(param_info, ObjectSchemaParam) or isinstance(param_info, FirstObjectSchemaParam):
         properties = OrderedDict()
         for prop in param_info.properties:
-            properties.update(generate_response_schema(prop, param_info))
+            properties.update(convert_openapi_schema(prop, param_info))
         row = OrderedDict({"type": "object", "properties": properties})
         return (
             row if isinstance(prev_param_info, ArraySchemaParam) or prev_param_info is None else {param_info.name: row}
@@ -25,7 +25,7 @@ def generate_response_schema(
     if isinstance(param_info, ArraySchemaParam):
         return {
             param_info.name: OrderedDict(
-                {"type": "array", "items": generate_response_schema(param_info.items, param_info)}
+                {"type": "array", "items": convert_openapi_schema(param_info.items, param_info)}
             )
         }
 

@@ -1,10 +1,10 @@
 from collections import OrderedDict
 from typing import Dict, List
 
-from ..stoplight.response_writer import generate_response_schema
+from ..stoplight.response_writer import convert_openapi_schema
 from ...domain.value_objects.api_kinds import ApiKind
 from ...domain.value_objects.endpoint_info import EndpointInfo
-from ...domain.value_objects.http_status import InternalServerError, Unauthorized, HttpStatus
+from ...domain.value_objects.http_status import InternalServerError, Unauthorized
 from ...domain.value_objects.parameters import ParamInfo
 from ...domain.value_objects.setting import Setting
 
@@ -60,11 +60,22 @@ class StoplightFormatWriter:
         return list(map(lambda path_param: _gen_path_param_dict(path_param), api_kind.path_parameters()))
 
     def _get_method_data(self, api_nl_name: str, api_kind: ApiKind) -> Dict[str, any]:
-        return {
+        method_data = {
             "summary": api_nl_name,
             "tags": [],
             "responses": self._get_each_response_of_method(api_kind),
         }
+        request_body = api_kind.request_body(self._endpoint_info.entity.endpoint_text)
+        if request_body:
+            method_data["requestBody"] = {
+                "content": {
+                    "application/json": {
+                        "schema": convert_openapi_schema(request_body),
+                        "examples": {},
+                    }
+                }
+            }
+        return method_data
 
     def _get_each_response_of_method(self, api_kind: ApiKind) -> Dict[str, any]:
         entity = self._endpoint_info.entity
@@ -76,9 +87,9 @@ class StoplightFormatWriter:
             http_status_list.append(Unauthorized())
 
         for http_status in http_status_list:
-            response_schema = generate_response_schema(api_kind.response_schema(
+            response_schema = convert_openapi_schema(api_kind.response_schema(
                 entity_name=entity.entity_name)) if http_status.is_succeed_status() \
-                else self._setting.error_response_schema.copy()
+                else self._setting.error_response_schema
             responses[str(http_status.status_code())] = {
                 "description": http_status.description(entity.entity_name, api_kind.operation_word()),
                 "content": {
