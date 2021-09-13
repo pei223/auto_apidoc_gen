@@ -23,5 +23,8 @@ class AddApi(ApiKind):
     def operation_word(self) -> str:
         return "登録"
 
+    def operation_word_en(self) -> str:
+        return "add"
+
     def endpoint_extension(self) -> str:
         return "add"

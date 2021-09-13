@@ -1,7 +1,7 @@
 from typing import List, Set
 
 from .base import ApiKind
-from ..parameters import PathParamInfo, ParamType
+from ..parameters import ParamInfo, ParamType
 
 from ..types import ActionType
 from ..http_status import HttpStatus, NotFound, OK, BadRequest
@@ -29,5 +29,8 @@ class FindApi(ApiKind):
     def operation_word(self) -> str:
         return "取得"
 
-    def path_parameters(self) -> List[PathParamInfo]:
-        return [PathParamInfo(type=ParamType.Integer, name="id", required=True)]
+    def operation_word_en(self) -> str:
+        return "find"
+
+    def path_parameters(self) -> List[ParamInfo]:
+        return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]

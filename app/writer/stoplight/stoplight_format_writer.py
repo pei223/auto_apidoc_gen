@@ -1,9 +1,11 @@
 from collections import OrderedDict
-from typing import Dict
+from typing import Dict, List
 
 from ..stoplight.response_writer import generate_response_schema
+from ...domain.value_objects.api_kinds import ApiKind
 from ...domain.value_objects.endpoint_info import EndpointInfo
-from ...domain.value_objects.http_status import InternalServerError, Unauthorized
+from ...domain.value_objects.http_status import InternalServerError, Unauthorized, HttpStatus
+from ...domain.value_objects.parameters import ParamInfo
 from ...domain.value_objects.setting import Setting
 
 
@@ -16,51 +18,56 @@ class StoplightFormatWriter:
 
     def parse(self):
         self._parse_basic_items()
-        self._parse_each_api()
+        self._parse_each_endpoint()
 
-    def _parse_each_api(self):
-        for i in range(self._endpoint_info.api_count()):
-            self._parse_endpoint(i)
-
-    def _parse_endpoint(self, order: int):
-        endpoint_url = self._endpoint_urls[order]
-        if not self._tree["paths"].get(endpoint_url):
-            self._tree["paths"][endpoint_url] = {}
-        self._set_path_parameters(order)
-        self._set_each_method(order)
-
-    def _set_path_parameters(self, order: int):
-        api_kind = self._endpoint_info.api_kind_ls[order]
-        endpoint_url = self._endpoint_urls[order]
-        if not self._tree["paths"][endpoint_url].get("parameters"):
-            self._tree["paths"][endpoint_url]["parameters"] = []
-        if len(api_kind.path_parameters()) == 0:
-            return
-        dict_ls = []
-        for path_param in api_kind.path_parameters():
-            dict_ls.append(
-                {
-                    "schema": {"type": path_param.type.value},
-                    "name": path_param.name,
-                    "in": "path",
-                    "required": path_param.required,
-                }
-            )
-        self._tree["paths"][endpoint_url]["parameters"] = dict_ls
-
-    def _set_each_method(self, order: int):
-        api_kind = self._endpoint_info.api_kind_ls[order]
-        endpoint_url = self._endpoint_urls[order]
-        method_data = {
-            "summary": self._endpoint_info.api_nl_names[order],
-            "tags": [],
-            "responses": self._get_each_response_of_method(order),
+    def _parse_basic_items(self):
+        self._tree["servers"] = [
+            {"url": self._setting.server_url},
+        ]
+        self._tree["info"] = {
+            "title": self._endpoint_info.entity.entity_name + "API",
+            "version": "1.0",
+            "summary": self._endpoint_info.entity.entity_name + "関連API",
         }
 
-        self._tree["paths"][endpoint_url][api_kind.method_type().value.lower()] = method_data
+    def _parse_each_endpoint(self):
+        for order in range(self._endpoint_info.api_count()):
+            api_nl_name = self._endpoint_info.api_nl_names[order]
+            api_kind = self._endpoint_info.api_kind_ls[order]
+            endpoint_url = self._endpoint_urls[order]
+            if not self._tree["paths"].get(endpoint_url):
+                self._tree["paths"][endpoint_url] = {}
 
-    def _get_each_response_of_method(self, order: int):
-        entity, api_kind = self._endpoint_info.entity, self._endpoint_info.api_kind_ls[order]
+            self._tree["paths"][endpoint_url].update({
+                "parameters": self._get_path_parameters(api_kind),
+                api_kind.method_type().value.lower(): {
+                    **self._get_method_data(api_nl_name, api_kind),
+                    **{"description": api_nl_name,
+                       "operationId": f"{api_kind.operation_word_en()}-{self._endpoint_info.entity.endpoint_text}"}
+                }
+            })
+
+    def _get_path_parameters(self, api_kind: ApiKind) -> List[Dict[str, any]]:
+        def _gen_path_param_dict(path_param: ParamInfo):
+            return {
+                "schema": {"type": path_param.type.value},
+                "name": path_param.name,
+                "in": "path",
+                "required": path_param.required,
+                "description": path_param.description
+            }
+
+        return list(map(lambda path_param: _gen_path_param_dict(path_param), api_kind.path_parameters()))
+
+    def _get_method_data(self, api_nl_name: str, api_kind: ApiKind) -> Dict[str, any]:
+        return {
+            "summary": api_nl_name,
+            "tags": [],
+            "responses": self._get_each_response_of_method(api_kind),
+        }
+
+    def _get_each_response_of_method(self, api_kind: ApiKind) -> Dict[str, any]:
+        entity = self._endpoint_info.entity
         responses = {}
         http_status_list = api_kind.http_status_list()
         if self._setting.add_internal_error:
@@ -82,16 +89,6 @@ class StoplightFormatWriter:
                 },
             }
         return responses
-
-    def _parse_basic_items(self):
-        self._tree["servers"] = [
-            {"url": self._setting.server_url},
-        ]
-        self._tree["info"] = {
-            "title": self._endpoint_info.entity.entity_name + "API",
-            "version": "1.0",
-            "summary": self._endpoint_info.entity.entity_name + "関連API",
-        }
 
     def get_tree(self) -> Dict[str, any]:
         return self._tree

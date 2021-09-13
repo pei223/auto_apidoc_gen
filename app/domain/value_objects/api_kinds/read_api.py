@@ -23,5 +23,8 @@ class ReadApi(ApiKind):
     def operation_word(self) -> str:
         return "取得"
 
+    def operation_word_en(self) -> str:
+        return "read"
+
     def endpoint_extension(self) -> str:
         return "list"

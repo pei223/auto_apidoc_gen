@@ -12,17 +12,10 @@ class ParamType(Enum):
 
 
 @dataclass
-class QueryParamInfo:
+class ParamInfo:
     name: str
     type: ParamType
     description: str
-    required: bool = True
-
-
-@dataclass
-class PathParamInfo:
-    name: str
-    type: ParamType
     required: bool = True
 
 

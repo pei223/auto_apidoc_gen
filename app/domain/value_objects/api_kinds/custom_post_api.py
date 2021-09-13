@@ -31,5 +31,8 @@ class CustomPostActionApi(ApiKind):
     def operation_word(self) -> str:
         return self.action_name
 
+    def operation_word_en(self) -> str:
+        return TranslationRepository.translate(self.action_name).lower()
+
     def endpoint_extension(self) -> str:
         return TranslationRepository.translate(self.action_name).lower()

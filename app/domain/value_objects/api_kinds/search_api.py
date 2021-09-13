@@ -1,7 +1,7 @@
 from typing import List, Set
 
 from .base import ApiKind
-from ..parameters import PathParamInfo, ParamType, QueryParamInfo
+from ..parameters import ParamInfo, ParamType
 
 from ..types import ActionType
 from ..http_status import HttpStatus, OK, BadRequest
@@ -28,5 +28,8 @@ class SearchApi(ApiKind):
     def operation_word(self) -> str:
         return "検索"
 
-    def query_parameters(self) -> List[QueryParamInfo]:
-        return [QueryParamInfo(type=ParamType.String, name="q", required=True, description="検索条件")]
+    def operation_word_en(self) -> str:
+        return "search"
+
+    def query_parameters(self) -> List[ParamInfo]:
+        return [ParamInfo(type=ParamType.String, name="q", required=True, description="検索条件")]
