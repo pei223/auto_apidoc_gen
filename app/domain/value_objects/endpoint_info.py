@@ -4,6 +4,7 @@ from typing import List
 
 from .api_kinds import ApiKind
 from .entity import Entity
+from ...utils.text_util import round_text
 
 
 @dataclass
@@ -16,7 +17,7 @@ class EndpointInfo:
         return list(
             map(
                 lambda api_kind: f"/{self.entity.entity_en_name}/"
-                f"{api_kind.rest_endpoint_extension() if is_REST else api_kind.endpoint_extension()}",
+                                 f"{api_kind.rest_endpoint_extension() if is_REST else api_kind.endpoint_extension()}",
                 self.api_kind_ls,
             )
         )
@@ -32,12 +33,21 @@ class EndpointInfo:
             )
         return "\n".join(result_rows)
 
+    def to_inline_string(self, is_REST=True):
+        result_rows = []
+        endpoint_urls = self.generate_endpoint_urls(is_REST)
+        for i in range(len(self.api_nl_names)):
+            result_rows.append(
+                f"{endpoint_urls[i]}:{self.api_kind_ls[i].method_type().value}"
+            )
+        return f"{round_text(self.entity.entity_nl_name, 8)}API: [{', '.join(result_rows)}]"
+
     def api_count(self) -> int:
         return len(self.api_nl_names)
 
 
 def aggregate_by_entity(
-    api_nl_names: List[str], entities: List[Entity], api_kind_ls: List[ApiKind]
+        api_nl_names: List[str], entities: List[Entity], api_kind_ls: List[ApiKind]
 ) -> List[EndpointInfo]:
     """
     同一Entityごとに自然言語API名, API種別を集約する
@@ -48,8 +58,8 @@ def aggregate_by_entity(
     """
     d = OrderedDict()
     for api_nl_name, entity, api_kin in zip(api_nl_names, entities, api_kind_ls):
-        if not d.get(entity.entity_nl_name):
-            d[entity.entity_nl_name] = {
+        if not d.get(entity.entity_en_name):
+            d[entity.entity_en_name] = {
                 "entity": entity,
                 "api_kind_ls": [
                     api_kin,
@@ -59,8 +69,8 @@ def aggregate_by_entity(
                 ],
             }
             continue
-        d[entity.entity_nl_name]["api_kind_ls"].append(api_kin)
-        d[entity.entity_nl_name]["api_nl_names"].append(api_nl_name)
+        d[entity.entity_en_name]["api_kind_ls"].append(api_kin)
+        d[entity.entity_en_name]["api_nl_names"].append(api_nl_name)
 
     endpoint_info_ls = []
     for key in d.keys():

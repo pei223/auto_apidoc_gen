@@ -4,9 +4,13 @@
 pip install -r requirements.txt
 ```
 
-## run
+## Test run
 
 ```
+python generate_api_doc.py --doc=test.txt --out=docs
+
+or
+
 python main.py
 ```
 

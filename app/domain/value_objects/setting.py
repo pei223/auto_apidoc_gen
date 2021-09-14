@@ -41,7 +41,7 @@ class Setting(metaclass=ABCMeta):
     def from_file(cls, filepath: str) -> "Setting":
         with open(filepath, "r", encoding="utf8") as file:
             data: Dict = json.load(file, object_pairs_hook=OrderedDict)
-            return Setting.from_dict(data)
+            return cls.from_dict(data)
 
     def output_error_response_model(self, filepath: str):
         output_yaml(self.error_response_schema, filepath)
