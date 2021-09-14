@@ -4,6 +4,7 @@ from collections import OrderedDict
 from dataclasses import dataclass
 from typing import Dict, Optional
 
+from .parameters import RefSchemaParam
 from ...utils.pyyaml_util import output_yaml
 
 
@@ -44,3 +45,6 @@ class Setting(metaclass=ABCMeta):
 
     def is_authorization_required(self) -> bool:
         return self.require_authorization is not None
+
+    def error_response_ref_schema(self):
+        return RefSchemaParam(name="error_response", ref_path="../common/ErrorResponse.yaml")

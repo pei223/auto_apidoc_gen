@@ -28,6 +28,7 @@ class StoplightFormatWriter:
             "title": self._endpoint_info.entity.entity_name + "API",
             "version": "1.0",
             "summary": self._endpoint_info.entity.entity_name + "関連API",
+            "description": self._endpoint_info.entity.entity_name + "関連API"
         }
 
     def _parse_each_endpoint(self):
@@ -43,21 +44,25 @@ class StoplightFormatWriter:
                 api_kind.method_type().value.lower(): {
                     **self._get_method_data(api_nl_name, api_kind),
                     **{"description": api_nl_name,
-                       "operationId": f"{api_kind.operation_word_en()}-{self._endpoint_info.entity.endpoint_text}"}
+                       "operationId": f"{api_kind.operation_word_en()}-{self._endpoint_info.entity.endpoint_text}"},
+                    **{"parameters": self._get_query_parameters(api_kind)}
                 }
             })
 
-    def _get_path_parameters(self, api_kind: ApiKind) -> List[Dict[str, any]]:
-        def _gen_path_param_dict(path_param: ParamInfo):
-            return {
-                "schema": {"type": path_param.type.value},
-                "name": path_param.name,
-                "in": "path",
-                "required": path_param.required,
-                "description": path_param.description
-            }
+    def _gen_param_dict(self, path_param: ParamInfo, param_kind: str):
+        return {
+            "schema": {"type": path_param.type.value},
+            "name": path_param.name,
+            "in": param_kind,
+            "required": path_param.required,
+            "description": path_param.description
+        }
 
-        return list(map(lambda path_param: _gen_path_param_dict(path_param), api_kind.path_parameters()))
+    def _get_path_parameters(self, api_kind: ApiKind) -> List[Dict[str, any]]:
+        return list(map(lambda path_param: self._gen_param_dict(path_param, "path"), api_kind.path_parameters()))
+
+    def _get_query_parameters(self, api_kind: ApiKind) -> List[Dict[str, any]]:
+        return list(map(lambda path_param: self._gen_param_dict(path_param, "query"), api_kind.query_parameters()))
 
     def _get_method_data(self, api_nl_name: str, api_kind: ApiKind) -> Dict[str, any]:
         method_data = {
@@ -88,8 +93,8 @@ class StoplightFormatWriter:
 
         for http_status in http_status_list:
             response_schema = convert_openapi_schema(api_kind.response_schema(
-                entity_name=entity.entity_name)) if http_status.is_succeed_status() \
-                else self._setting.error_response_schema
+                entity_name=entity.endpoint_text)) if http_status.is_succeed_status() \
+                else convert_openapi_schema(self._setting.error_response_ref_schema())
             responses[str(http_status.status_code())] = {
                 "description": http_status.description(entity.entity_name, api_kind.operation_word()),
                 "content": {

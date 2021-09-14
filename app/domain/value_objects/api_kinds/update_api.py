@@ -43,3 +43,8 @@ class UpdateApi(ApiKind):
         return FirstObjectSchemaParam(properties=[
             ValueSchemaParam(name="name", type=ParamType.String)
         ])
+
+    def response_schema(self, entity_name: str) -> SchemaParamInfo:
+        return FirstObjectSchemaParam(properties=[
+            ValueSchemaParam(name="result", type=ParamType.Boolean)
+        ])

@@ -31,7 +31,7 @@ def convert_openapi_schema(
 
     if isinstance(param_info, RefSchemaParam):
         row = OrderedDict({"$ref": param_info.ref_path})
-        return row if isinstance(prev_param_info, ArraySchemaParam) else {param_info.name: row}
+        return row if isinstance(prev_param_info, ArraySchemaParam) or not prev_param_info else {param_info.name: row}
 
     if isinstance(param_info, ValueSchemaParam):
         row = OrderedDict({"type": param_info.type.value})
