@@ -16,25 +16,32 @@ class Setting(metaclass=ABCMeta):
     add_internal_error: bool
     is_rest: bool
     server_url: str
+    custom_translate_dict: Dict[str, str]
+
+    @classmethod
+    def from_dict(cls, data: Dict):
+        require_authorization = data["require_authorization"]
+        is_rest = data["is_rest"]
+        authorization = data.get("authorization") or None
+        error_res_schema = data.get("error_response") or {}
+        add_internal_error = data["add_internal_error"]
+        server_url = data["server_url"]
+        custom_translate_dict = data["custom_translate_dict"] or {}
+        return cls(
+            require_authorization=require_authorization,
+            authorization_info=authorization,
+            error_response_schema=error_res_schema,
+            is_rest=is_rest,
+            add_internal_error=add_internal_error,
+            server_url=server_url,
+            custom_translate_dict=custom_translate_dict
+        )
 
     @classmethod
     def from_file(cls, filepath: str) -> "Setting":
         with open(filepath, "r", encoding="utf8") as file:
             data: Dict = json.load(file, object_pairs_hook=OrderedDict)
-            require_authorization = data["require_authorization"]
-            is_rest = data["is_rest"]
-            authorization = data.get("authorization") or None
-            error_res_schema = data.get("error_response") or {}
-            add_internal_error = data["add_internal_error"]
-            server_url = data["server_url"]
-            return cls(
-                require_authorization=require_authorization,
-                authorization_info=authorization,
-                error_response_schema=error_res_schema,
-                is_rest=is_rest,
-                add_internal_error=add_internal_error,
-                server_url=server_url,
-            )
+            return Setting.from_dict(data)
 
     def output_error_response_model(self, filepath: str):
         output_yaml(self.error_response_schema, filepath)

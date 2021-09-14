@@ -1,6 +1,7 @@
 from pathlib import Path
 from app.domain.value_objects.endpoint_info import aggregate_by_entity
 from app.parser.parser import parse
+from app.repository.translate import TranslationRepository
 from app.utils.pyyaml_util import output_yaml
 from app.writer.stoplight.stoplight_format_writer import StoplightFormatWriter
 from app.writer.stoplight.stoplight_setting import StoplightSetting
@@ -19,6 +20,9 @@ if __name__ == "__main__":
         "お気に入り一覧を取得する"
     ]
 
+    setting = StoplightSetting.from_file("./setting.json")
+    TranslationRepository.inject_custom_translate_dict(setting.custom_translate_dict)
+
     entities = []
     api_types = []
     for text in text_ls:
@@ -32,7 +36,6 @@ if __name__ == "__main__":
 
     endpoints = aggregate_by_entity(text_ls, entities, api_types)
 
-    setting = StoplightSetting.from_file("./setting.json")
     for endpoint in endpoints:
         print(endpoint.to_string(is_REST=False))
         print("\n\n")

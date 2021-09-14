@@ -22,5 +22,8 @@
   },
   "is_rest": true,
   "add_internal_error": true,
-  "server_url": "http://localhost:3000"
+  "server_url": "http://localhost:3000",
+  "custom_translate_dict": {
+    "確定": "save"
+  }
 }
