@@ -35,7 +35,7 @@ class FindApi(ApiKind):
     def path_parameters(self) -> List[ParamInfo]:
         return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]
 
-    def response_schema(self, entity_name: str) -> SchemaParamInfo:
+    def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
         # NOTE ここentity名で自動化できるとかなりすごい
         return FirstObjectSchemaParam(properties=[
             ValueSchemaParam(name="id", type=ParamType.String),

@@ -9,17 +9,17 @@ _EXCLUDE_WORD_ON_TRANSLATE_LIST = ["情報", "状態"]
 
 @dataclass
 class Entity:
-    def __init__(self, entity_name: str):
-        self.entity_name = entity_name
-        self._endpoint_text = None
+    def __init__(self, entity_nl_name: str):
+        self.entity_nl_name = entity_nl_name
+        self._endpoint_name = None
 
     @property
-    def endpoint_text(self):
-        if not self._endpoint_text:
-            extracted_entity_name = re.sub("|".join(_EXCLUDE_WORD_ON_TRANSLATE_LIST), "", self.entity_name)
+    def entity_en_name(self):
+        if not self._endpoint_name:
+            extracted_entity_name = re.sub("|".join(_EXCLUDE_WORD_ON_TRANSLATE_LIST), "", self.entity_nl_name)
             translated_text = TranslationRepository.translate(extracted_entity_name)
-            self._endpoint_text = self._words_to_endpoint(translated_text)
-        return self._endpoint_text
+            self._endpoint_name = self._words_to_endpoint(translated_text)
+        return self._endpoint_name
 
     def _words_to_endpoint(self, translated_text: str):
         text_ls = translated_text.split()
@@ -35,4 +35,4 @@ class Entity:
     def __eq__(self, other: "Entity"):
         if not isinstance(other, Entity):
             return False
-        return self.entity_name == other.entity_name
+        return self.entity_nl_name == other.entity_nl_name

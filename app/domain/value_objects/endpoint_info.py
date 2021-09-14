@@ -15,7 +15,7 @@ class EndpointInfo:
     def generate_endpoint_urls(self, is_REST: bool) -> List[str]:
         return list(
             map(
-                lambda api_kind: f"/{self.entity.endpoint_text}/"
+                lambda api_kind: f"/{self.entity.entity_en_name}/"
                 f"{api_kind.rest_endpoint_extension() if is_REST else api_kind.endpoint_extension()}",
                 self.api_kind_ls,
             )
@@ -23,7 +23,7 @@ class EndpointInfo:
 
     def to_string(self, is_REST=True):
         result_rows = [
-            self.entity.entity_name + "API list",
+            self.entity.entity_nl_name + "API list",
         ]
         endpoint_urls = self.generate_endpoint_urls(is_REST)
         for i in range(len(self.api_nl_names)):
@@ -48,8 +48,8 @@ def aggregate_by_entity(
     """
     d = OrderedDict()
     for api_nl_name, entity, api_kin in zip(api_nl_names, entities, api_kind_ls):
-        if not d.get(entity.entity_name):
-            d[entity.entity_name] = {
+        if not d.get(entity.entity_nl_name):
+            d[entity.entity_nl_name] = {
                 "entity": entity,
                 "api_kind_ls": [
                     api_kin,
@@ -59,8 +59,8 @@ def aggregate_by_entity(
                 ],
             }
             continue
-        d[entity.entity_name]["api_kind_ls"].append(api_kin)
-        d[entity.entity_name]["api_nl_names"].append(api_nl_name)
+        d[entity.entity_nl_name]["api_kind_ls"].append(api_kin)
+        d[entity.entity_nl_name]["api_nl_names"].append(api_nl_name)
 
     endpoint_info_ls = []
     for key in d.keys():

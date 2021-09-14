@@ -31,11 +31,11 @@ class ReadApi(ApiKind):
     def endpoint_extension(self) -> str:
         return "list"
 
-    def response_schema(self, entity_name: str) -> SchemaParamInfo:
+    def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
         # NOTE ここentity名で自動化できるとかなりすごい
         return FirstObjectSchemaParam(properties=[
             ArraySchemaParam(
-                name=entity_name,
+                name=entity_en_name,
                 items=ObjectSchemaParam(name="", properties=[
                     ValueSchemaParam(name="id", type=ParamType.String),
                     ValueSchemaParam(name="name", type=ParamType.String),

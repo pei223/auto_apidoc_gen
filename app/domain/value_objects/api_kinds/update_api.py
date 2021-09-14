@@ -38,13 +38,13 @@ class UpdateApi(ApiKind):
     def path_parameters(self) -> List[ParamInfo]:
         return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]
 
-    def request_body(self, entity_name: str) -> Optional[SchemaParamInfo]:
+    def request_body(self, entity_en_name: str) -> Optional[SchemaParamInfo]:
         # NOTE ここentity名で自動化できるとかなりすごい
         return FirstObjectSchemaParam(properties=[
             ValueSchemaParam(name="name", type=ParamType.String)
         ])
 
-    def response_schema(self, entity_name: str) -> SchemaParamInfo:
+    def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
         return FirstObjectSchemaParam(properties=[
             ValueSchemaParam(name="result", type=ParamType.Boolean)
         ])

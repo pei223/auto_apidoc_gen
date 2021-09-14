@@ -38,7 +38,7 @@ class DeleteApi(ApiKind):
     def path_parameters(self) -> List[ParamInfo]:
         return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]
 
-    def response_schema(self, entity_name: str) -> SchemaParamInfo:
+    def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
         return FirstObjectSchemaParam(properties=[
             ValueSchemaParam(name="result", type=ParamType.Boolean)
         ])

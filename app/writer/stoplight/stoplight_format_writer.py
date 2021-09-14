@@ -25,10 +25,10 @@ class StoplightFormatWriter:
             {"url": self._setting.server_url},
         ]
         self._tree["info"] = {
-            "title": self._endpoint_info.entity.entity_name + "API",
+            "title": self._endpoint_info.entity.entity_nl_name + "API",
             "version": "1.0",
-            "summary": self._endpoint_info.entity.entity_name + "関連API",
-            "description": self._endpoint_info.entity.entity_name + "関連API"
+            "summary": self._endpoint_info.entity.entity_nl_name + "関連API",
+            "description": self._endpoint_info.entity.entity_nl_name + "関連API"
         }
 
     def _parse_each_endpoint(self):
@@ -44,7 +44,7 @@ class StoplightFormatWriter:
                 api_kind.method_type().value.lower(): {
                     **self._get_method_data(api_nl_name, api_kind),
                     **{"description": api_nl_name,
-                       "operationId": f"{api_kind.operation_word_en()}-{self._endpoint_info.entity.endpoint_text}"},
+                       "operationId": f"{api_kind.operation_word_en()}-{self._endpoint_info.entity.entity_en_name}"},
                     **{"parameters": self._get_query_parameters(api_kind)}
                 }
             })
@@ -70,7 +70,7 @@ class StoplightFormatWriter:
             "tags": [],
             "responses": self._get_each_response_of_method(api_kind),
         }
-        request_body = api_kind.request_body(self._endpoint_info.entity.endpoint_text)
+        request_body = api_kind.request_body(self._endpoint_info.entity.entity_en_name)
         if request_body:
             method_data["requestBody"] = {
                 "content": {
@@ -93,10 +93,10 @@ class StoplightFormatWriter:
 
         for http_status in http_status_list:
             response_schema = convert_openapi_schema(api_kind.response_schema(
-                entity_name=entity.endpoint_text)) if http_status.is_succeed_status() \
+                entity_en_name=entity.entity_en_name)) if http_status.is_succeed_status() \
                 else convert_openapi_schema(self._setting.error_response_ref_schema())
             responses[str(http_status.status_code())] = {
-                "description": http_status.description(entity.entity_name, api_kind.operation_word()),
+                "description": http_status.description(entity.entity_nl_name, api_kind.operation_word()),
                 "content": {
                     "application/json": {
                         "schema": response_schema,

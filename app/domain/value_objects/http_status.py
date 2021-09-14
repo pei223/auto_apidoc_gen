@@ -11,10 +11,10 @@ class HttpStatus(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def description(self, entity_name: str, operation_word: str):
+    def description(self, entity_nl_name: str, operation_word: str):
         """
         HTTPステータスの説明
-        :param entity_name:
+        :param entity_nl_name:
         :param operation_word:
         :return:
         """
@@ -28,15 +28,15 @@ class OK(HttpStatus):
     def status_code(self) -> int:
         return 200
 
-    def description(self, entity_name: str, operation_word: str):
-        return f"{entity_name}{operation_word}成功"
+    def description(self, entity_nl_name: str, operation_word: str):
+        return f"{entity_nl_name}{operation_word}成功"
 
 
 class BadRequest(HttpStatus):
     def status_code(self) -> int:
         return 400
 
-    def description(self, entity_name: str, operation_word: str):
+    def description(self, entity_nl_name: str, operation_word: str):
         return "リクエスト不正"
 
 
@@ -44,7 +44,7 @@ class Unauthorized(HttpStatus):
     def status_code(self) -> int:
         return 401
 
-    def description(self, entity_name: str, operation_word: str):
+    def description(self, entity_nl_name: str, operation_word: str):
         return "認証エラー"
 
 
@@ -52,21 +52,21 @@ class NotFound(HttpStatus):
     def status_code(self) -> int:
         return 404
 
-    def description(self, entity_name: str, operation_word: str):
-        return f"{entity_name}データが存在しない"
+    def description(self, entity_nl_name: str, operation_word: str):
+        return f"{entity_nl_name}データが存在しない"
 
 
 class Conflict(HttpStatus):
     def status_code(self) -> int:
         return 409
 
-    def description(self, entity_name: str, operation_word: str):
-        return f"{entity_name}データが重複している"
+    def description(self, entity_nl_name: str, operation_word: str):
+        return f"{entity_nl_name}データが重複している"
 
 
 class InternalServerError(HttpStatus):
     def status_code(self) -> int:
         return 500
 
-    def description(self, entity_name: str, operation_word: str):
+    def description(self, entity_nl_name: str, operation_word: str):
         return "内部サーバーエラー"

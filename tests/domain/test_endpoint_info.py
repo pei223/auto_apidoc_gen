@@ -14,7 +14,7 @@ def _mock_translation_repository(mocker: pytest_mock.MockFixture):
         return d[text]
 
     entity_mock = mocker.Mock(spec=Entity)
-    entity_mock.endpoint_text = "aaaaaaaaa"
+    entity_mock.entity_en_name = "aaaaaaaaa"
     mocker.patch("app.repository.translate.TranslationRepository.translate").side_effect = mock_func
 
 
@@ -39,11 +39,11 @@ def test_aggregate_by_entity():
         AddApi()
     ]
     endpoints = aggregate_by_entity(entities=entities, api_kind_ls=api_kinds, api_nl_names=api_nl_names)
-    assert endpoints[0].entity.entity_name == "サンプル1"
+    assert endpoints[0].entity.entity_nl_name == "サンプル1"
     assert len(endpoints[0].api_nl_names) == 2
     assert len(endpoints[0].api_kind_ls) == 2
 
-    assert endpoints[1].entity.entity_name == "サンプル2"
+    assert endpoints[1].entity.entity_nl_name == "サンプル2"
     assert len(endpoints[1].api_nl_names) == 3
     assert len(endpoints[1].api_kind_ls) == 3
 

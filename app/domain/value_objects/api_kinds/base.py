@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import List, Set, Optional
 
-from ..parameters import SchemaParamInfo, ParamInfo, ObjectSchemaParam, ValueSchemaParam, ArraySchemaParam, \
-    ParamType
+from ..parameters import SchemaParamInfo, ParamInfo
 from ..types import ActionType, ModifierType, HttpMethodType
 from ..http_status import HttpStatus
 
@@ -33,7 +32,7 @@ class ApiKind(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def response_schema(self, entity_name: str) -> SchemaParamInfo:
+    def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
         pass
 
     def modifier_type(self) -> Optional[ModifierType]:
@@ -51,5 +50,5 @@ class ApiKind(metaclass=ABCMeta):
     def query_parameters(self) -> List[ParamInfo]:
         return []
 
-    def request_body(self, entity_name: str) -> Optional[SchemaParamInfo]:
+    def request_body(self, entity_en_name: str) -> Optional[SchemaParamInfo]:
         return None

@@ -38,7 +38,7 @@ if __name__ == "__main__":
         print("\n\n")
         f = StoplightFormatWriter(endpoint, setting)
         f.parse()
-        output_yaml(f.get_tree(), str(root.joinpath("paths").joinpath(endpoint.entity.entity_name + ".yaml")))
+        output_yaml(f.get_tree(), str(root.joinpath("paths").joinpath(endpoint.entity.entity_nl_name + ".yaml")))
 
     setting.output_auth_model(str(root.joinpath("common").joinpath("Authorization.yaml")))
     setting.output_error_response_model(str(root.joinpath("common").joinpath("ErrorResponse.yaml")))
