@@ -4,13 +4,15 @@ from .base import ApiKind
 from ..parameters import SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam, ParamType
 
 from ..types import ActionType, HttpMethodType
-from ..http_status import HttpStatus, OK, BadRequest
+from ..http_status import HttpStatus, OK, BadRequest, Conflict
 
 
 class AddApi(ApiKind):
     def http_status_list(self) -> List[HttpStatus]:
         return [
-            OK(), BadRequest()
+            OK(),
+            BadRequest(),
+            Conflict(),
         ]
 
     def action_types(self) -> Set[ActionType]:

@@ -3,7 +3,7 @@
   "authorization": {
     "schema": "Bearer <token>"
   },
-  "error_response": {
+  "error_response_model": {
     "title": "エラーレスポンス",
     "type": "object",
     "properties": {
@@ -15,13 +15,19 @@
             "code": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "code"
+          ]
         }
       }
-    }
+    },
+    "required": [
+      "errors"
+    ]
   },
   "is_rest": true,
-  "add_internal_error": true,
+  "add_internal_error": false,
   "server_url": "http://localhost:3000",
   "custom_translate_dict": {
     "確定": "save"
