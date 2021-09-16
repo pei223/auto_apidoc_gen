@@ -4,7 +4,7 @@ from ...domain.value_objects.setting import Setting
 from ...utils.pyyaml_util import output_yaml
 
 
-class StoplightSetting(Setting):
+class OpenAPIYamlSetting(Setting):
     def output_auth_model(self, filepath: str):
         auth_model = OrderedDict(
             {

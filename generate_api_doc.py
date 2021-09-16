@@ -7,8 +7,8 @@ from app.parser.parser import parse
 from app.repository.translate import TranslationRepository
 from app.utils.pyyaml_util import output_yaml
 from app.utils.text_util import round_text
-from app.writer.stoplight.stoplight_format_writer import StoplightFormatWriter
-from app.writer.stoplight.stoplight_setting import StoplightSetting
+from app.writer.openapi_yaml.openapi_yaml_writer import OpenAPIYamlFormatWriter
+from app.writer.openapi_yaml.openapi_setting import OpenAPIYamlSetting
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--doc", required=True, help='Path of document described API in "Japanese natural language".')
@@ -20,7 +20,7 @@ args = parser.parse_args()
 # Load setting
 setting = None
 try:
-    setting = StoplightSetting.from_file(args.setting)
+    setting = OpenAPIYamlSetting.from_file(args.setting)
 except FileNotFoundError:
     print(f"Setting file not found:  {args.setting}")
     exit(1)
@@ -61,7 +61,7 @@ pbar = tqdm.tqdm(endpoints)
 for endpoint in pbar:
     out_text = round_text(endpoint.to_inline_string(is_REST=setting.is_rest), 50)
     pbar.set_description("[Generating {:50s}]".format(out_text))
-    f = StoplightFormatWriter(endpoint, setting)
+    f = OpenAPIYamlFormatWriter(endpoint, setting)
     f.parse()
     output_yaml(f.get_tree(), str(api_root_path.joinpath(f"{endpoint.entity.entity_nl_name}.yaml")))
 

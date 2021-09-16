@@ -3,8 +3,8 @@ from app.domain.value_objects.endpoint_info import aggregate_by_entity
 from app.parser.parser import parse
 from app.repository.translate import TranslationRepository
 from app.utils.pyyaml_util import output_yaml
-from app.writer.stoplight.stoplight_format_writer import StoplightFormatWriter
-from app.writer.stoplight.stoplight_setting import StoplightSetting
+from app.writer.openapi_yaml.openapi_yaml_writer import OpenAPIYamlFormatWriter
+from app.writer.openapi_yaml.openapi_setting import OpenAPIYamlSetting
 
 if __name__ == "__main__":
     text_ls = [
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         "お気に入り一覧を取得する"
     ]
 
-    setting = StoplightSetting.from_file("./setting.json")
+    setting = OpenAPIYamlSetting.from_file("./setting.json")
     TranslationRepository.inject_custom_translate_dict(setting.custom_translate_dict)
 
     entities = []
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     for endpoint in endpoints:
         print(endpoint.to_string(is_REST=False))
         print("\n\n")
-        f = StoplightFormatWriter(endpoint, setting)
+        f = OpenAPIYamlFormatWriter(endpoint, setting)
         f.parse()
         output_yaml(f.get_tree(), str(root.joinpath("paths").joinpath(endpoint.entity.entity_nl_name + ".yaml")))
 

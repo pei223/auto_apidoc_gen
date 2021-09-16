@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from typing import Dict, List
 
-from ..stoplight.response_writer import convert_openapi_schema
+from ..openapi_yaml.schema_writer import convert_openapi_schema
 from ...domain.value_objects.api_kinds import ApiKind
 from ...domain.value_objects.endpoint_info import EndpointInfo
 from ...domain.value_objects.http_status import InternalServerError, Unauthorized
@@ -9,7 +9,7 @@ from ...domain.value_objects.parameters import ParamInfo
 from ...domain.value_objects.setting import Setting
 
 
-class StoplightFormatWriter:
+class OpenAPIYamlFormatWriter:
     def __init__(self, endpoint_info: EndpointInfo, setting: Setting):
         self._tree = OrderedDict({"openapi": "3.1.0", "info": {}, "servers": {}, "paths": {}})
         self._endpoint_info = endpoint_info
