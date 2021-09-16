@@ -1,7 +1,7 @@
 {
-  "require_authorization": true,
   "authorization": {
-    "schema": "Bearer <token>"
+    "required": true,
+    "token_type": "bearer"
   },
   "error_response_model": {
     "title": "エラーレスポンス",

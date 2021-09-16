@@ -45,7 +45,7 @@ class OpenAPIYamlFormatWriter:
                     **self._get_method_data(api_nl_name, api_kind),
                     **{"description": api_nl_name,
                        "operationId": f"{api_kind.operation_word_en()}-{self._endpoint_info.entity.entity_en_name}"},
-                    **{"parameters": self._get_query_parameters(api_kind)}
+                    **{"parameters": self._get_query_parameters(api_kind) + self._get_header_parameters()}
                 }
             })
 
@@ -63,6 +63,9 @@ class OpenAPIYamlFormatWriter:
 
     def _get_query_parameters(self, api_kind: ApiKind) -> List[Dict[str, any]]:
         return list(map(lambda path_param: self._gen_param_dict(path_param, "query"), api_kind.query_parameters()))
+
+    def _get_header_parameters(self) -> List[Dict[str, any]]:
+        return [convert_openapi_schema(self._setting.authorization_ref_schema()), ]
 
     def _get_method_data(self, api_nl_name: str, api_kind: ApiKind) -> Dict[str, any]:
         method_data = {

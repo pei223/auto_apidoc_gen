@@ -15,7 +15,6 @@
         - 更新・登録系ならリクエストボディあり
         - 取得系ならレスポンスあり
 
-
 ## 対応形式
 OpenAPI(Yaml v3.1)のみ対応
 
@@ -28,8 +27,12 @@ pip install -r requirements.txt
 
 ## Run
 ```
-python generate_api_doc.py --doc=<処理名をまとめたファイルのパス> --out=<出力フォルダパス>
+python generate_api_doc.py --doc=<処理名をまとめたファイルのパス> --out=<出力フォルダパス> --setting=<設定ファイルパス>
+
+# サンプル実行
+python generate_api_doc.py --doc=sample_process_list_file.txt --out=docs --setting=sample_setting.json
 ```
+
 
 ## 処理名をまとめたファイルの形式
 以下のように自然言語で記載した処理名を改行区切りでまとめたファイル。
@@ -43,14 +46,15 @@ sample_process_list_file.txtを参照。
 ユーザー情報を更新する
 ```
 
-
 ## 設定ファイルについて
-以下のjson形式のファイル
+以下のjson形式のファイル。
+
+sample_setting.jsonを参照。
 ```
 {
-  "require_authorization": true,  // 認証必須かどうか
-  "authorization": {  // 認証スキーマ
-    "schema": "Bearer <token>"
+  "authorization": {  // 認証関連
+    "required": true,  // 認証必須かどうか
+    "token_type": "bearer"  // トークンの種類
   },
   "error_response_model": {  // エラーレスポンスのモデル。ここの内容はyamlのOpenAPI形式でそのままファイル出力される。
     "title": "エラーレスポンス",
@@ -83,7 +87,6 @@ sample_process_list_file.txtを参照。
   }
 }
 ```
-
 
 
 ## 注意点

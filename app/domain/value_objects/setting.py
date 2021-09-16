@@ -9,9 +9,20 @@ from ...utils.pyyaml_util import output_yaml
 
 
 @dataclass
+class AuthorizationInfo:
+    token_type: str
+    required: bool
+
+    @classmethod
+    def from_dict(cls, data: Dict) -> 'AuthorizationInfo':
+        token_type = data["token_type"]
+        required = data["required"]
+        return AuthorizationInfo(token_type, required)
+
+
+@dataclass
 class Setting(metaclass=ABCMeta):
-    require_authorization: bool
-    authorization_info: Optional[Dict[str, any]]
+    authorization_info: AuthorizationInfo
     error_response_schema: Dict[str, any]
     add_internal_error: bool
     is_rest: bool
@@ -19,17 +30,16 @@ class Setting(metaclass=ABCMeta):
     custom_translate_dict: Dict[str, str]
 
     @classmethod
-    def from_dict(cls, data: Dict):
-        require_authorization = data["require_authorization"]
+    def from_dict(cls, data: Dict) -> 'Setting':
         is_rest = data["is_rest"]
-        authorization = data.get("authorization") or None
         error_res_schema = data.get("error_response_model") or {}
         add_internal_error = data["add_internal_error"]
         server_url = data["server_url"]
         custom_translate_dict = data["custom_translate_dict"] or {}
+        auth_info = AuthorizationInfo.from_dict(data["authorization"])
+
         return cls(
-            require_authorization=require_authorization,
-            authorization_info=authorization,
+            authorization_info=auth_info,
             error_response_schema=error_res_schema,
             is_rest=is_rest,
             add_internal_error=add_internal_error,
@@ -51,7 +61,12 @@ class Setting(metaclass=ABCMeta):
         pass
 
     def is_authorization_required(self) -> bool:
-        return self.require_authorization is not None
+        return self.authorization_info.required
 
     def error_response_ref_schema(self):
         return RefSchemaParam(name="error_response", ref_path="../common/ErrorResponse.yaml")
+
+    def authorization_ref_schema(self):
+        return RefSchemaParam(name="authorization_schema",
+                              ref_path=f"../common/Authorization.yaml#/components/parameters/"
+                                       f"{self.authorization_info.token_type}")

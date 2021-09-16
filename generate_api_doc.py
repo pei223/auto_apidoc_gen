@@ -13,7 +13,7 @@ from app.writer.openapi_yaml.openapi_setting import OpenAPIYamlSetting
 parser = argparse.ArgumentParser()
 parser.add_argument("--doc", required=True, help='Path of document described API in "Japanese natural language".')
 parser.add_argument("--out", required=True, help="Result documents directory path.")
-parser.add_argument("--setting", required=False, default=os.path.dirname(os.path.abspath(__file__)) + "/setting.json",
+parser.add_argument("--setting", required=False, default=os.path.dirname(os.path.abspath(__file__)) + "/sample_setting.json",
                     help="Setting file path.")
 args = parser.parse_args()
 

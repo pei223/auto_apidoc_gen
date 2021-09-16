@@ -15,12 +15,12 @@ class OpenAPIYamlSetting(Setting):
                 "components": {
                     "schemas": {},
                     "parameters": {
-                        "bearer": {
+                        self.authorization_info.token_type: {
                             "name": "Authorization",
                             "in": "header",
                             "required": True,
                             "schema": {"type": "string"},
-                            "description": self.authorization_info["schema"],
+                            "description": f"{self.authorization_info.token_type} <token>",
                         }
                     },
                 },

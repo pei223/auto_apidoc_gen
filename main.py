@@ -20,7 +20,7 @@ if __name__ == "__main__":
         "お気に入り一覧を取得する"
     ]
 
-    setting = OpenAPIYamlSetting.from_file("./setting.json")
+    setting = OpenAPIYamlSetting.from_file("sample_setting.json")
     TranslationRepository.inject_custom_translate_dict(setting.custom_translate_dict)
 
     entities = []
