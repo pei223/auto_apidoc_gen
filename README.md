@@ -1,13 +1,8 @@
 # 自動APIドキュメントGenerator : auto_api_doc_gen
-
 自然言語で記載した処理名から自動でAPI仕様書を途中まで作成します。
 
-## セットアップ
+形態素解析して翻訳APIで英語化して決められた形式で出力します。
 
-```
-git clone https://github.com/pei223/auto_apidoc_gen
-pip install -r requirements.txt
-```
 
 ## 自動出力してくれるもの
 - API一覧ファイルのリスト
@@ -21,16 +16,89 @@ pip install -r requirements.txt
         - 取得系ならレスポンスあり
 
 
+## 対応形式
+OpenAPI(Yaml v3.1)のみ対応
+
+
+## セットアップ
+```
+git clone https://github.com/pei223/auto_apidoc_gen
+pip install -r requirements.txt
+```
+
+## Run
+```
+python generate_api_doc.py --doc=<処理名をまとめたファイルのパス> --out=<出力フォルダパス>
+```
+
+## 処理名をまとめたファイルの形式
+以下のように自然言語で記載した処理名を改行区切りでまとめたファイル。
+
+sample_process_list_file.txtを参照。
+```
+店舗情報詳細を取得する
+店舗情報の一覧を取得する
+ユーザーを登録する
+ユーザー情報を取得する
+ユーザー情報を更新する
+```
+
+
+## 設定ファイルについて
+以下のjson形式のファイル
+```
+{
+  "require_authorization": true,  // 認証必須かどうか
+  "authorization": {  // 認証スキーマ
+    "schema": "Bearer <token>"
+  },
+  "error_response_model": {  // エラーレスポンスのモデル。ここの内容はyamlのOpenAPI形式でそのままファイル出力される。
+    "title": "エラーレスポンス",
+    "type": "object",
+    "properties": {
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "code"
+          ]
+        }
+      }
+    },
+    "required": [
+      "errors"
+    ]
+  },
+  "is_rest": true,  // RESTかどうか
+  "add_internal_error": false,  // 内部エラーのレスポンスを各APIに記載するか
+  "server_url": "http://localhost:3000",  // サーバーのURL
+  "custom_translate_dict": {  // 使用者がカスタマイズできる翻訳辞書(日本語 -> 英語)
+    "確定": "save"
+  }
+}
+```
+
+
+
 ## 注意点
 - !!!単純な文のみ認識します!!!
 - 「注文履歴とユーザー情報を取得する」など複数の対象データ(注文履歴、ユーザー情報)が入っている場合はうまく動作しません。
 - 「ユーザーの通知情報を取得する」のような入れ子になるとうまく動作しません。
 
 
-## コツ
+## うまく出力するには
 以下の形式で記載すると望ましい出力になりやすいです。
+```
 [対象データ名(お気に入りや注文履歴など)]を[登録、削除、取得]する
+```
 
 
-## 対応形式
-OpenAPI(Yaml v3.1)のみ対応
+
+
+
