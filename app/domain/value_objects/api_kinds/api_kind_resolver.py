@@ -1,5 +1,8 @@
 from typing import Set, Optional
 
+from ...errors import ApiKindNotMatched
+from ..types import ActionType, ModifierType
+
 from . import (
     CustomPostActionApi,
     FindApi,
@@ -9,8 +12,8 @@ from . import (
     DeleteApi,
     UpdateApi,
     ApiKind,
+    AllDeleteApi,
 )
-from app.domain.value_objects.types import ActionType, ModifierType
 
 
 def resolve_api_type(
@@ -28,9 +31,10 @@ def resolve_api_type(
         ReadApi(),
         UpdateApi(),
         DeleteApi(),
+        AllDeleteApi(),
     ]
     for api_type in api_types:
         if actions == api_type.action_types():
             if not modifier or modifier == api_type.modifier_type():
                 return api_type
-    raise RuntimeError("ActionTypeが不正")
+    raise ApiKindNotMatched(actions, modifier)

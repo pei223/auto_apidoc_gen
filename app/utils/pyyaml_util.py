@@ -21,4 +21,6 @@ def _adjust_ordereddict_to_yaml():
 def output_yaml(tree: Dict[str, any], filepath: str):
     _adjust_ordereddict_to_yaml()
     with codecs.open(filepath, "w", "utf-8") as f:
-        yaml.dump(tree, f, encoding="utf-8", allow_unicode=True, default_flow_style=False)
+        yaml.dump(
+            tree, f, encoding="utf-8", allow_unicode=True, default_flow_style=False
+        )

@@ -1,7 +1,13 @@
 from typing import List, Set
 
 from .base import ApiKind
-from ..parameters import ParamInfo, ParamType, SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam
+from ..parameters import (
+    ParamInfo,
+    ParamType,
+    SchemaParamInfo,
+    FirstObjectSchemaParam,
+    ValueSchemaParam,
+)
 
 from ..types import ActionType, HttpMethodType
 from ..http_status import HttpStatus, NotFound, OK, BadRequest
@@ -27,7 +33,7 @@ class DeleteApi(ApiKind):
         return "{id}"
 
     def endpoint_extension(self) -> str:
-        return "delete/{id}"
+        return "{id}/delete"
 
     def operation_word(self) -> str:
         return "削除"
@@ -36,9 +42,13 @@ class DeleteApi(ApiKind):
         return "delete"
 
     def path_parameters(self) -> List[ParamInfo]:
-        return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]
+        return [
+            ParamInfo(
+                type=ParamType.Integer, name="id", required=True, description="id"
+            )
+        ]
 
     def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
-        return FirstObjectSchemaParam(properties=[
-            ValueSchemaParam(name="result", type=ParamType.Boolean)
-        ])
+        return FirstObjectSchemaParam(
+            properties=[ValueSchemaParam(name="result", type=ParamType.Boolean)]
+        )

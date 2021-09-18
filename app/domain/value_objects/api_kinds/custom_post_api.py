@@ -1,6 +1,11 @@
 from typing import List, Set, Optional
 
-from ..parameters import SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam, ParamType
+from ..parameters import (
+    SchemaParamInfo,
+    FirstObjectSchemaParam,
+    ValueSchemaParam,
+    ParamType,
+)
 from ....repository.translate import TranslationRepository
 from .base import ApiKind
 
@@ -13,12 +18,7 @@ class CustomPostActionApi(ApiKind):
         self.action_name = action_name
 
     def http_status_list(self) -> List[HttpStatus]:
-        return [
-            OK(),
-            BadRequest(),
-            NotFound(),
-            Conflict()
-        ]
+        return [OK(), BadRequest(), NotFound(), Conflict()]
 
     def action_types(self) -> Set[ActionType]:
         return set()
@@ -40,11 +40,11 @@ class CustomPostActionApi(ApiKind):
 
     def request_body(self, entity_en_name: str) -> Optional[SchemaParamInfo]:
         # NOTE ここentity名で自動化できるとかなりすごい
-        return FirstObjectSchemaParam(properties=[
-            ValueSchemaParam(name="name", type=ParamType.String)
-        ])
+        return FirstObjectSchemaParam(
+            properties=[ValueSchemaParam(name="name", type=ParamType.String)]
+        )
 
     def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
-        return FirstObjectSchemaParam(properties=[
-            ValueSchemaParam(name="result", type=ParamType.Boolean)
-        ])
+        return FirstObjectSchemaParam(
+            properties=[ValueSchemaParam(name="result", type=ParamType.Boolean)]
+        )

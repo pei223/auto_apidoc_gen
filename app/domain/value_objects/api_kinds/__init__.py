@@ -6,3 +6,4 @@ from .delete_api import DeleteApi
 from .search_api import SearchApi
 from .custom_post_api import CustomPostActionApi
 from .update_api import UpdateApi
+from .all_delete_api import AllDeleteApi

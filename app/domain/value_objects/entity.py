@@ -22,9 +22,16 @@ class Entity:
     def generate_endpoint_urls(self, is_rest: bool) -> List[str]:
         return list(
             map(
-                lambda api_info:
-                f"/{self.entity_en_name}/"
+                lambda api_info: f"/{self.entity_en_name}/"
                 f"{api_info.api_kind.rest_endpoint_extension() if is_rest else api_info.api_kind.endpoint_extension()}",
+                self.api_info_ls,
+            )
+        )
+
+    def generate_wrap_up_sentences(self) -> List[str]:
+        return list(
+            map(
+                lambda api_info: f"{self.entity_ja_name}{api_info.api_kind.operation_word()}API",
                 self.api_info_ls,
             )
         )
@@ -43,8 +50,8 @@ class Entity:
     def to_inline_string(self, is_rest=True):
         result_rows = []
         endpoint_urls = self.generate_endpoint_urls(is_rest)
-        for i in range(len(self.api_info_ls)):
+        for ind in range(len(self.api_info_ls)):
             result_rows.append(
-                f"{endpoint_urls[i]}:{self.api_info_ls[i].api_kind.method_type(is_rest).value}"
+                f"{endpoint_urls[ind]}:{self.api_info_ls[ind].api_kind.method_type(is_rest).value}"
             )
         return f"{round_text(self.entity_ja_name, 8)}API: [{', '.join(result_rows)}]"

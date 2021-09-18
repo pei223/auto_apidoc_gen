@@ -1,7 +1,13 @@
 from typing import List, Set
 
 from .base import ApiKind
-from ..parameters import ParamInfo, ParamType, SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam
+from ..parameters import (
+    ParamInfo,
+    ParamType,
+    SchemaParamInfo,
+    FirstObjectSchemaParam,
+    ValueSchemaParam,
+)
 
 from ..types import ActionType
 from ..http_status import HttpStatus, NotFound, OK, BadRequest
@@ -16,15 +22,13 @@ class FindApi(ApiKind):
         ]
 
     def action_types(self) -> Set[ActionType]:
-        return {
-            ActionType.Get
-        }
+        return {ActionType.Get}
 
     def rest_endpoint_extension(self) -> str:
         return "{id}"
 
     def endpoint_extension(self) -> str:
-        return "find/{id}"
+        return "{id}/find"
 
     def operation_word(self) -> str:
         return "取得"
@@ -33,11 +37,17 @@ class FindApi(ApiKind):
         return "find"
 
     def path_parameters(self) -> List[ParamInfo]:
-        return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]
+        return [
+            ParamInfo(
+                type=ParamType.Integer, name="id", required=True, description="id"
+            )
+        ]
 
     def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
         # NOTE ここentity名で自動化できるとかなりすごい
-        return FirstObjectSchemaParam(properties=[
-            ValueSchemaParam(name="id", type=ParamType.String),
-            ValueSchemaParam(name="name", type=ParamType.String),
-        ])
+        return FirstObjectSchemaParam(
+            properties=[
+                ValueSchemaParam(name="id", type=ParamType.String),
+                ValueSchemaParam(name="name", type=ParamType.String),
+            ]
+        )

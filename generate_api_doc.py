@@ -3,7 +3,10 @@ import os
 import sys
 from pathlib import Path
 import tqdm
+
+from app.domain.errors import ApiKindNotMatched
 from app.domain.value_objects.setting import SettingParseError
+from app.parser.parse_error import ActionNotFound, EntityNotFound
 from app.parser.parser import parse_sentences
 from app.repository.translate import TranslationRepository
 from app.utils.pyyaml_util import output_yaml
@@ -12,11 +15,14 @@ from app.writer.openapi_yaml.openapi_yaml_writer import OpenAPIYamlFormatWriter
 from app.writer.openapi_yaml.openapi_setting import OpenAPIYamlSetting
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--doc", required=True, help='Path of document described API in "Japanese natural language".')
-parser.add_argument("--out", required=True, help="Result documents directory path.")
-parser.add_argument("--setting", required=False,
+parser.add_argument("--doc", type=str, required=True,
+                    help='Path of document described API in "Japanese natural language".')
+parser.add_argument("--out", type=str, required=True, help="Result documents directory path.")
+parser.add_argument("--setting", type=str, required=False,
                     default=os.path.dirname(os.path.abspath(__file__)) + "/sample_setting.json",
                     help="Setting file path.")
+parser.add_argument("--debug", action='store_true', required=False, default=False, help="debug mode")
+
 args = parser.parse_args()
 
 
@@ -52,7 +58,15 @@ common_path.mkdir(parents=True, exist_ok=True)
 api_root_path.mkdir(parents=True, exist_ok=True)
 
 # Parse natural language api lines
-entities = parse_sentences(api_sentences, verbose=True)
+try:
+    entities = parse_sentences(api_sentences, show_progress=True, verbose=args.debug)
+except ActionNotFound as e:
+    on_error(e.message)
+except EntityNotFound as e:
+    on_error(e.message)
+except ApiKindNotMatched as e:
+    on_error(e.message)
+
 print("\n\nParsing finished🙌🙌🙌\n\n")
 
 # Automatically generate API documents in OpenAPI format

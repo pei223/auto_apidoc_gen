@@ -1,8 +1,14 @@
 from typing import List, Set, Optional
 
 from .base import ApiKind
-from ..parameters import SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam, ParamType, ArraySchemaParam, \
-    ObjectSchemaParam
+from ..parameters import (
+    SchemaParamInfo,
+    FirstObjectSchemaParam,
+    ValueSchemaParam,
+    ParamType,
+    ArraySchemaParam,
+    ObjectSchemaParam,
+)
 
 from ..types import ActionType, ModifierType
 from ..http_status import HttpStatus, OK
@@ -33,11 +39,17 @@ class ReadApi(ApiKind):
 
     def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
         # NOTE ここentity名で自動化できるとかなりすごい
-        return FirstObjectSchemaParam(properties=[
-            ArraySchemaParam(
-                name=entity_en_name,
-                items=ObjectSchemaParam(name="", properties=[
-                    ValueSchemaParam(name="id", type=ParamType.String),
-                    ValueSchemaParam(name="name", type=ParamType.String),
-                ])),
-        ])
+        return FirstObjectSchemaParam(
+            properties=[
+                ArraySchemaParam(
+                    name=entity_en_name,
+                    items=ObjectSchemaParam(
+                        name="",
+                        properties=[
+                            ValueSchemaParam(name="id", type=ParamType.String),
+                            ValueSchemaParam(name="name", type=ParamType.String),
+                        ],
+                    ),
+                ),
+            ]
+        )

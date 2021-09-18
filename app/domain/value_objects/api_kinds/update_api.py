@@ -1,7 +1,13 @@
 from typing import List, Set, Optional
 
 from .base import ApiKind
-from ..parameters import ParamInfo, ParamType, SchemaParamInfo, FirstObjectSchemaParam, ValueSchemaParam
+from ..parameters import (
+    ParamInfo,
+    ParamType,
+    SchemaParamInfo,
+    FirstObjectSchemaParam,
+    ValueSchemaParam,
+)
 
 from ..types import ActionType, HttpMethodType
 from ..http_status import HttpStatus, NotFound, OK, BadRequest
@@ -16,9 +22,7 @@ class UpdateApi(ApiKind):
         ]
 
     def action_types(self) -> Set[ActionType]:
-        return {
-            ActionType.Update
-        }
+        return {ActionType.Update}
 
     def method_type(self, is_rest: bool) -> HttpMethodType:
         return HttpMethodType.Put if is_rest else HttpMethodType.Post
@@ -27,7 +31,7 @@ class UpdateApi(ApiKind):
         return "{id}"
 
     def endpoint_extension(self) -> str:
-        return "update/{id}"
+        return "{id}/update"
 
     def operation_word(self) -> str:
         return "更新"
@@ -36,15 +40,19 @@ class UpdateApi(ApiKind):
         return "update"
 
     def path_parameters(self) -> List[ParamInfo]:
-        return [ParamInfo(type=ParamType.Integer, name="id", required=True, description="id")]
+        return [
+            ParamInfo(
+                type=ParamType.Integer, name="id", required=True, description="id"
+            )
+        ]
 
     def request_body(self, entity_en_name: str) -> Optional[SchemaParamInfo]:
         # NOTE ここentity名で自動化できるとかなりすごい
-        return FirstObjectSchemaParam(properties=[
-            ValueSchemaParam(name="name", type=ParamType.String)
-        ])
+        return FirstObjectSchemaParam(
+            properties=[ValueSchemaParam(name="name", type=ParamType.String)]
+        )
 
     def response_schema(self, entity_en_name: str) -> SchemaParamInfo:
-        return FirstObjectSchemaParam(properties=[
-            ValueSchemaParam(name="result", type=ParamType.Boolean)
-        ])
+        return FirstObjectSchemaParam(
+            properties=[ValueSchemaParam(name="result", type=ParamType.Boolean)]
+        )

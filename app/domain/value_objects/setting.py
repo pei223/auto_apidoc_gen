@@ -29,16 +29,15 @@ class AuthorizationInfo:
     required: bool
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'AuthorizationInfo':
-        type_dict = {
-            "token_type": "string",
-            "required": "bool"
-        }
+    def from_dict(cls, data: Dict) -> "AuthorizationInfo":
+        type_dict = {"token_type": "string", "required": "bool"}
         try:
             token_type = data["token_type"]
             required = data["required"]
             if not isinstance(token_type, str):
-                raise SettingTypeError("authorization/token_type", type_dict["token_type"])
+                raise SettingTypeError(
+                    "authorization/token_type", type_dict["token_type"]
+                )
             if not isinstance(required, bool):
                 raise SettingTypeError("authorization/required", type_dict["required"])
             return AuthorizationInfo(token_type, required)
@@ -57,14 +56,14 @@ class Setting(metaclass=ABCMeta):
     custom_translate_dict: Dict[str, str]
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Setting':
+    def from_dict(cls, data: Dict) -> "Setting":
         type_dict = {
             "is_rest": "bool",
             "error_response_model": "Object",
             "add_internal_error": "bool",
             "server_url": "string",
             "custom_translate_dict": "Object",
-            "authorization": "Object"
+            "authorization": "Object",
         }
         try:
             is_rest = data["is_rest"]
@@ -77,13 +76,19 @@ class Setting(metaclass=ABCMeta):
             if not isinstance(is_rest, bool):
                 raise SettingTypeError("is_rest", type_dict["is_rest"])
             if not isinstance(error_res_schema, Dict):
-                raise SettingTypeError("error_response_model", type_dict["error_response_model"])
+                raise SettingTypeError(
+                    "error_response_model", type_dict["error_response_model"]
+                )
             if not isinstance(add_internal_error, bool):
-                raise SettingTypeError("add_internal_error", type_dict["add_internal_error"])
+                raise SettingTypeError(
+                    "add_internal_error", type_dict["add_internal_error"]
+                )
             if not isinstance(server_url, str):
                 raise SettingTypeError("server_url", type_dict["server_url"])
             if not isinstance(custom_translate_dict, dict):
-                raise SettingTypeError("custom_translate_dict", type_dict["custom_translate_dict"])
+                raise SettingTypeError(
+                    "custom_translate_dict", type_dict["custom_translate_dict"]
+                )
             if not isinstance(auth_info, dict):
                 raise SettingTypeError("authorization", type_dict["authorization"])
 
@@ -93,7 +98,7 @@ class Setting(metaclass=ABCMeta):
                 is_rest=is_rest,
                 add_internal_error=add_internal_error,
                 server_url=server_url,
-                custom_translate_dict=custom_translate_dict
+                custom_translate_dict=custom_translate_dict,
             )
         except KeyError as e:
             key = e.args[0]
@@ -116,9 +121,13 @@ class Setting(metaclass=ABCMeta):
         return self.authorization_info.required
 
     def error_response_ref_schema(self):
-        return RefSchemaParam(name="error_response", ref_path="../common/ErrorResponse.yaml")
+        return RefSchemaParam(
+            name="error_response", ref_path="../common/ErrorResponse.yaml"
+        )
 
     def authorization_ref_schema(self):
-        return RefSchemaParam(name="authorization_schema",
-                              ref_path=f"../common/Authorization.yaml#/components/parameters/"
-                                       f"{self.authorization_info.token_type}")
+        return RefSchemaParam(
+            name="authorization_schema",
+            ref_path=f"../common/Authorization.yaml#/components/parameters/"
+            f"{self.authorization_info.token_type}",
+        )
