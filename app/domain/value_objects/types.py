@@ -13,6 +13,7 @@ class ActionType(Enum):
 class ModifierType(Enum):
     All_or_List = 1
     Multi = 2
+    Detail = 3
 
 
 class HttpMethodType(Enum):

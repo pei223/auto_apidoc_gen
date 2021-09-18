@@ -3,6 +3,7 @@ from typing import List, Tuple
 from janome.analyzer import Analyzer
 
 # from janome.charfilter import RegexReplaceCharFilter
+from janome.tokenfilter import POSStopFilter
 from janome.tokenizer import Tokenizer, Token
 
 from .action_type_resolver import resolve_action_type
@@ -18,7 +19,10 @@ def parse(text: str) -> Tuple[Entity, ApiKind]:
     char_filters = [
         # RegexReplaceCharFilter("", "")
     ]
-    analyzer = Analyzer(tokenizer=tokenizer, char_filters=char_filters)
+    token_filters = [
+        POSStopFilter(['記号', '接続詞', '副詞', '連体詞', "助詞", "助動詞", "感動詞"])
+    ]
+    analyzer = Analyzer(tokenizer=tokenizer, char_filters=char_filters, token_filters=token_filters)
 
     tokens: List[Token] = list(analyzer.analyze(text))
 
