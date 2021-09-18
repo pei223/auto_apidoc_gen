@@ -1,4 +1,6 @@
 # 自動APIドキュメントGenerator : auto_api_doc_gen
+![出力イメージ](https://user-images.githubusercontent.com/19645346/133891392-0abbfb2f-a0c7-44bf-96c8-05604a5e2cdc.png)
+
 自然言語で記載した処理名から自動でAPI仕様書を途中まで作成します。
 
 形態素解析して翻訳APIで英語化して決められた形式で出力します。
