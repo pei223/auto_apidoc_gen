@@ -38,7 +38,7 @@ class ApiKind(metaclass=ABCMeta):
     def modifier_type(self) -> Optional[ModifierType]:
         return None
 
-    def method_type(self) -> HttpMethodType:
+    def method_type(self, is_rest: bool) -> HttpMethodType:
         return HttpMethodType.Get
 
     def rest_endpoint_extension(self) -> str:

@@ -23,7 +23,7 @@ class CustomPostActionApi(ApiKind):
     def action_types(self) -> Set[ActionType]:
         return set()
 
-    def method_type(self) -> HttpMethodType:
+    def method_type(self, is_rest: bool) -> HttpMethodType:
         return HttpMethodType.Post
 
     def rest_endpoint_extension(self) -> str:

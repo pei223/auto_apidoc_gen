@@ -20,7 +20,7 @@ class AddApi(ApiKind):
             ActionType.Add
         }
 
-    def method_type(self) -> HttpMethodType:
+    def method_type(self, is_rest: bool) -> HttpMethodType:
         return HttpMethodType.Post
 
     def operation_word(self) -> str:

@@ -1,25 +1,33 @@
 from dataclasses import dataclass
+from typing import List
+
 import inflection as i
-import re
 
+from .api_info import ApiInfo
 from ...repository.translate import TranslationRepository
-
-_EXCLUDE_WORD_ON_TRANSLATE_LIST = ["情報", "状態"]
+from ...utils.text_util import round_text
 
 
 @dataclass
 class Entity:
-    def __init__(self, entity_nl_name: str):
-        self.entity_nl_name = entity_nl_name
-        self._endpoint_name = None
+    def __init__(self, entity_ja_name: str, api_info_ls: List[ApiInfo]):
+        self.entity_ja_name = entity_ja_name
+        self.api_info_ls = api_info_ls
 
     @property
     def entity_en_name(self):
-        if not self._endpoint_name:
-            extracted_entity_name = re.sub("|".join(_EXCLUDE_WORD_ON_TRANSLATE_LIST), "", self.entity_nl_name)
-            translated_text = TranslationRepository.translate(extracted_entity_name)
-            self._endpoint_name = self._words_to_endpoint(translated_text)
-        return self._endpoint_name
+        translated_text = TranslationRepository.translate(self.entity_ja_name)
+        return self._words_to_endpoint(translated_text)
+
+    def generate_endpoint_urls(self, is_rest: bool) -> List[str]:
+        return list(
+            map(
+                lambda api_info:
+                f"/{self.entity_en_name}/"
+                f"{api_info.api_kind.rest_endpoint_extension() if is_rest else api_info.api_kind.endpoint_extension()}",
+                self.api_info_ls,
+            )
+        )
 
     def _words_to_endpoint(self, translated_text: str):
         text_ls = translated_text.split()
@@ -32,7 +40,11 @@ class Entity:
         norm_text_ls[-1] = i.pluralize(norm_text_ls[-1])
         return "_".join(norm_text_ls).lower()
 
-    def __eq__(self, other: "Entity"):
-        if not isinstance(other, Entity):
-            return False
-        return self.entity_nl_name == other.entity_nl_name
+    def to_inline_string(self, is_rest=True):
+        result_rows = []
+        endpoint_urls = self.generate_endpoint_urls(is_rest)
+        for i in range(len(self.api_info_ls)):
+            result_rows.append(
+                f"{endpoint_urls[i]}:{self.api_info_ls[i].api_kind.method_type(is_rest).value}"
+            )
+        return f"{round_text(self.entity_ja_name, 8)}API: [{', '.join(result_rows)}]"

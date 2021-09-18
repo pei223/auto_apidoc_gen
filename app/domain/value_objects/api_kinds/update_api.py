@@ -20,8 +20,8 @@ class UpdateApi(ApiKind):
             ActionType.Update
         }
 
-    def method_type(self) -> HttpMethodType:
-        return HttpMethodType.Put
+    def method_type(self, is_rest: bool) -> HttpMethodType:
+        return HttpMethodType.Put if is_rest else HttpMethodType.Post
 
     def rest_endpoint_extension(self) -> str:
         return "{id}"

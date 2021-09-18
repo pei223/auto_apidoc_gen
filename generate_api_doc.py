@@ -3,9 +3,8 @@ import os
 import sys
 from pathlib import Path
 import tqdm
-from app.domain.value_objects.endpoint_info import aggregate_by_entity
 from app.domain.value_objects.setting import SettingParseError
-from app.parser.parser import parse
+from app.parser.parser import parse_sentences
 from app.repository.translate import TranslationRepository
 from app.utils.pyyaml_util import output_yaml
 from app.utils.text_util import round_text
@@ -38,10 +37,10 @@ except SettingParseError as e:
 TranslationRepository.inject_custom_translate_dict(setting.custom_translate_dict)
 
 # Load natural language api lines
-api_nl_text_ls = []
+api_sentences = []
 try:
     with open(args.doc, "r", encoding="utf-8") as file:
-        api_nl_text_ls = list(map(lambda row: row.replace("\n", ""), file.readlines()))
+        api_sentences = list(map(lambda row: row.replace("\n", ""), file.readlines()))
 except FileNotFoundError:
     on_error(f"Doc file not found:  {args.doc}")
 
@@ -52,27 +51,18 @@ api_root_path = root.joinpath("paths")
 common_path.mkdir(parents=True, exist_ok=True)
 api_root_path.mkdir(parents=True, exist_ok=True)
 
-entities, api_types = [], []
-
 # Parse natural language api lines
-pbar = tqdm.tqdm(api_nl_text_ls)
-for text in pbar:
-    pbar.set_description("[Parsing {:20s}]".format(round_text(text, 20)))
-    entity, api_type = parse(text)
-    entities.append(entity)
-    api_types.append(api_type)
+entities = parse_sentences(api_sentences, verbose=True)
 print("\n\nParsing finished🙌🙌🙌\n\n")
 
-endpoints = aggregate_by_entity(api_nl_text_ls, entities, api_types)
-
 # Automatically generate API documents in OpenAPI format
-pbar = tqdm.tqdm(endpoints)
-for endpoint in pbar:
-    out_text = round_text(endpoint.to_inline_string(is_REST=setting.is_rest), 50)
+pbar = tqdm.tqdm(entities)
+for entity in pbar:
+    out_text = round_text(entity.to_inline_string(is_rest=setting.is_rest), 50)
     pbar.set_description("[Generating {:50s}]".format(out_text))
-    f = OpenAPIYamlFormatWriter(endpoint, setting)
+    f = OpenAPIYamlFormatWriter(entity, setting)
     f.parse()
-    output_yaml(f.get_tree(), str(api_root_path.joinpath(f"{endpoint.entity.entity_nl_name}.yaml")))
+    output_yaml(f.get_tree(), str(api_root_path.joinpath(f"{entity.entity_ja_name}.yaml")))
 
 setting.output_auth_model(str(common_path.joinpath("Authorization.yaml")))
 setting.output_error_response_model(str(common_path.joinpath("ErrorResponse.yaml")))
